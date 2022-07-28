@@ -1,0 +1,32 @@
+_metadata:
+  major_version: 1
+  minor_version: 1
+display_information:
+  name: THAAS
+  description: Tom Hanks As A Service
+  # background_color: "#0000AA"
+settings:
+  socket_mode_enabled: false
+  org_deploy_enabled: true
+  # interactivity:
+  #   is_enabled: true
+  #   request_url: https://thaas.io/api/slack
+features:
+  # app_home:
+  #   home_tab_enabled: false
+  #   messages_tab_enabled: false
+  bot_user:
+    display_name: thaas
+  slash_commands: # NOTE: see https://api.slack.com/interactivity/slash-commands
+    - command: /thaas
+      description: Generate an image of Tom Hanks.
+      usage_hint: /thaas
+      url: https://thaas.io/api/slack
+oauth_config:
+  scopes:
+    bot:
+      - commands
+      - chat:write
+      - chat:write.public
+  redirect_urls:
+    - https://thaas.io/api/slack/oauth

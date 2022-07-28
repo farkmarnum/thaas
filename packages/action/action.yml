@@ -1,0 +1,6 @@
+name: 'THAAS'
+description: 'Tom Hanks As A Service'
+author: 'Mark Farnum'
+runs:
+  using: 'node16'
+  main: 'dist/index.js'

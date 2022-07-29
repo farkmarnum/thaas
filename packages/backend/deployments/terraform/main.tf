@@ -27,7 +27,7 @@ resource "aws_lambda_function" "lambda" {
   handler       = "${each.value}.handler"
   source_code_hash = filebase64sha256("dist/${each.value}.zip")
 
-  runtime = "nodejs12.x"
+  runtime = "nodejs16.x"
 }
 
 output "lambdas" {

@@ -5,11 +5,11 @@ type MyEvent = {
   name: string
 }
 
-export async function ExampleHandler<Handler>(event: MyEvent) {
+export const handler: Handler = async (event: MyEvent) => {
   // validate event at runtime
   assertType<MyEvent>(event)
 
   return { msg: `Hello ${event.name}` }
 }
 
-exports.handler = ExampleHandler
+exports.handler = handler

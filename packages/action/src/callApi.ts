@@ -1,3 +1,3 @@
-const callApi = async (): Promise<void> => {}
+const callApi = async (): Promise<void> => {};
 
 export default callApi;

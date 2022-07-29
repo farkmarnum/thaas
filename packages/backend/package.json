@@ -1,18 +1,20 @@
 {
-  "name": "terraform-typescript-lambda",
-  "version": "0.0.1",
-  "description": "Minimal example for using webpack for compiling lambda functions",
+  "name": "thaas-github-action",
+  "version": "1.1.0",
+  "description": "Tom Hanks As A Service - GitHub Action",
+  "author": "Mark Farnum",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/farkmarnum/thaas.git"
+  },
+  "license": "MIT",
   "private": true,
   "main": "webpack.config.js",
   "scripts": {
     "build": "webpack --config webpack.config.js",
-    "plan": "npm run build && terraform plan",
-    "deploy": "npm run build && terraform deploy",
     "test:watch": "jest --watch",
     "test": "jest"
   },
-  "author": "Julian Krispel-Samsel",
-  "license": "MIT",
   "dependencies": {
     "@types/aws-sdk": "^2.7.0",
     "aws-sdk": "^2.756.0",

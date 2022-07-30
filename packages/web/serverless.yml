@@ -17,7 +17,7 @@ functions:
 
 plugins:
   - serverless-domain-manager
-  - serverless-frontend-plugin
+  # - serverless-frontend-plugin
   - serverless-hooks
 
 custom:

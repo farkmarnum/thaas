@@ -21,7 +21,7 @@ todo
 
 Then, use the command in a PR comment:
 ```
-/thaas
+!thaas
 ```
 
 

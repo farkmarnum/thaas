@@ -8,6 +8,6 @@
     "serverless-hooks": "^1.0.0"
   },
   "scripts": {
-    "hook:before:deploy": "cd backend && yarn install"
+    "hook:before:package:initialize": "cd backend && yarn install"
   }
 }

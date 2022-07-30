@@ -1,0 +1,15 @@
+{
+  "name": "thaas-frontend-web",
+  "version": "1.1.0",
+  "description": "Tom Hanks As A Service - Web Frontend",
+  "author": "Mark Farnum",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/farkmarnum/thaas.git"
+  },
+  "license": "MIT",
+  "private": true,
+  "sripts": {
+    "build": "cp public dist"
+  }
+}

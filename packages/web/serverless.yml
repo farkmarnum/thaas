@@ -11,7 +11,7 @@ provider:
 
 functions:
   api:
-    handler: handler.handler
+    handler: backend/handler.handler
     events:
       - httpApi: '*'
 

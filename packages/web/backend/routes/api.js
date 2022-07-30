@@ -18,7 +18,7 @@ router.get("/integrations/slack/oauth", (req, res, next) => {
   });
 });
 
-router.get("/integrations/github", (req, res, next) => {
+router.post("/integrations/github", (req, res, next) => {
   return res.status(200).json({
     message: "TODO: API for GitHub integration.",
   });

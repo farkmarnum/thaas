@@ -2,6 +2,12 @@ const serverless = require("serverless-http");
 const express = require("express");
 const app = express();
 
+app.get("/", (_req, res) => {
+  return res.status(400).json({
+    message: "Usage: GET /api/v1/tom",
+  });
+});
+
 app.get("/health", (_req, res) => {
   return res.sendStatus(200);
 });

@@ -4,7 +4,6 @@ service: api
 
 frameworkVersion: '3'
 
-### Lambda + API
 provider:
   name: aws
   runtime: nodejs14.x
@@ -15,7 +14,6 @@ functions:
     events:
       - httpApi: '*'
 
-### DNS
 plugins:
   - serverless-domain-manager
 
@@ -24,3 +22,5 @@ custom:
     domainName: api.thaas.io
     basePath: ''
     createRoute53Record: true
+    stage: ${self:provider.stage}
+

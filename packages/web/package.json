@@ -4,6 +4,10 @@
   "devDependencies": {
     "serverless": "^3.21.0",
     "serverless-domain-manager": "^6.0.3",
-    "serverless-frontend-plugin": "^2.0.0"
+    "serverless-frontend-plugin": "^2.0.0",
+    "serverless-hooks": "^1.0.0"
+  },
+  "scripts": {
+    "hook:before:deploy": "cd backend && yarn install"
   }
 }

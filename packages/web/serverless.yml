@@ -29,8 +29,9 @@ custom:
     createRoute53Record: true
   customCertificate:
     certificateName: thaas.io
-    subjectAlternativeNames: '*.thaas.io'
-    hostedZoneNames: thaas.io
+    subjectAlternativeNames:
+      - '*.thaas.io'
+    hostedZoneNames: thaas.io.
   # serverless-frontend-plugin:
   #   distDir: frontend/dist
   #   build:

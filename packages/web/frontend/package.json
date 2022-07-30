@@ -9,7 +9,7 @@
   },
   "license": "MIT",
   "private": true,
-  "sripts": {
-    "build": "cp public dist"
+  "scripts": {
+    "build": "rm -rf dist && cp -r public dist"
   }
 }

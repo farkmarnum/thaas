@@ -28,6 +28,7 @@ custom:
     createRoute53Record: true
     createRoute53IPv6Record: true
     endpointType: regional
+    apiType: http
   # serverless-frontend-plugin:
   #   distDir: frontend/dist
   #   build:

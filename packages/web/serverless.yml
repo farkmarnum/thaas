@@ -37,6 +37,5 @@ custom:
       command: ['yarn', 'run', 'build']
     distribution:
       acmCertificateArn: arn:aws:acm:us-east-1:517918230755:certificate/a71f6489-08db-4eb5-b86f-30b7104f83f4
-      dnsName: thaas.io
-      altDnsName: www.thaas.io
-      hostedZoneName: thaas.io.
+      dnsName: 'thaas.io'
+      hostedZoneName: 'thaas.io.'

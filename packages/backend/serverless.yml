@@ -22,6 +22,5 @@ plugins:
 custom:
   customDomain:
     domainName: api.thaas.io
-    basePath: api
-    stage: prod
+    basePath: ''
     createRoute53Record: true

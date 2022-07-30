@@ -2,6 +2,7 @@
   "name": "serverless",
   "private": true,
   "devDependencies": {
+    "serverless-certificate-creator": "^1.6.0",
     "serverless-domain-manager": "^6.0.3",
     "serverless-frontend-plugin": "^2.0.0"
   }

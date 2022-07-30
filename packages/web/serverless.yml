@@ -17,11 +17,28 @@ functions:
 
 plugins:
   - serverless-domain-manager
+  - serverless-certificate-creator
+  # - serverless-frontend-plugin
 
 custom:
   customDomain:
+    stage: ${self:provider.stage}
     domainName: api.thaas.io
+    certificateName: thaas.io
     basePath: ''
     createRoute53Record: true
-    stage: ${self:provider.stage}
+  customCertificate:
+    certificateName: thaas.io
+    subjectAlternativeNames: '*.thaas.io'
+    hostedZoneNames: thaas.io
+  # serverless-frontend-plugin:
+  #   distDir: frontend/dist
+  #   build:
+  #     cwdDir: frontend
+  #     command: ['yarn', 'run', 'build']
+  #   distribution:
+  #     acmCertificateArn: ${certificate:${self:custom.customCertificate.certificateName}:CertificateArn}
+  #     dnsName: <your-domain.com> # Route53 record value
+  #     altDnsName: <another.your-domain.com> # Route53 record value
+  #     hostedZoneName: <your-domain.com> # Route53 Hosted Zone Name
 

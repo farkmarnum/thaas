@@ -6,7 +6,11 @@ Tom Hanks As A Service
 It should be possible to summon a picture of Tom Hanks (aka hom tanks) on any platform just by typing a single command.
 
 
-## Platforms
+## Why
+A picture of tom hanks is a great way to say tHanks.
+
+
+## Integrations
 
 ### GitHub
 
@@ -36,7 +40,7 @@ Then, use the command in a post:
 Want to build your own Tom Hanks solution? You can access the API at https://thaas.io/api.
 
 ```
-curl -s https://thaas.io/api?params=here > tom.png
+curl -s https://thaas.io/api/tom?params=here > tom.png
 ```
 
 This API is also the backend for all other platform integrations.

@@ -17,7 +17,6 @@ functions:
 
 plugins:
   - serverless-domain-manager
-  - serverless-certificate-creator
   # - serverless-frontend-plugin
 
 custom:
@@ -27,11 +26,6 @@ custom:
     certificateName: thaas.io
     basePath: ''
     createRoute53Record: true
-  customCertificate:
-    certificateName: thaas.io
-    subjectAlternativeNames:
-      - '*.thaas.io'
-    hostedZoneNames: thaas.io.
   # serverless-frontend-plugin:
   #   distDir: frontend/dist
   #   build:

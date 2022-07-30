@@ -1,7 +1,7 @@
 {
-  "name": "thaas-github-action",
+  "name": "thaas-backend-api",
   "version": "1.1.0",
-  "description": "Tom Hanks As A Service - GitHub Action",
+  "description": "Tom Hanks As A Service - Backend API",
   "author": "Mark Farnum",
   "repository": {
     "type": "git",

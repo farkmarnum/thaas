@@ -1,5 +1,5 @@
 const callApi = async (): Promise<void> => {};
 
-// https://thaas.io/api/github
+// https://api.thaas.io/api/v1/github
 
 export default callApi;

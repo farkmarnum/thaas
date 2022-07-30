@@ -37,10 +37,10 @@ Then, use the command in a post:
 
 ### API
 
-Want to build your own Tom Hanks solution? You can access the API at https://thaas.io/api.
+Want to build your own Tom Hanks solution? You can access the API at https://api.thaas.io.
 
 ```
-curl -s https://thaas.io/api/tom?params=here > tom.png
+curl -s https://api.thaas.io/api/v1/tom?params=here > tom.png
 ```
 
 This API is also the backend for all other platform integrations.

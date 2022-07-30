@@ -2,19 +2,13 @@ const serverless = require("serverless-http");
 const express = require("express");
 const app = express();
 
-app.get("/", (req, res, next) => {
-  return res.status(200).json({
-    message: "Hello from root!",
-  });
+app.get("/health", (_req, res) => {
+  return res.sendStatus(200);
 });
 
-app.get("/hello", (req, res, next) => {
-  return res.status(200).json({
-    message: "Hello from path!",
-  });
-});
+app.use('/api/v1', require('./routes/api'));
 
-app.use((req, res, next) => {
+app.use((_req, res) => {
   return res.status(404).json({
     error: "Not Found",
   });

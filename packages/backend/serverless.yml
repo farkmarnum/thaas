@@ -1,6 +1,6 @@
 org: farkmarnum
 app: thaas
-service: thaas
+service: api
 
 frameworkVersion: '3'
 

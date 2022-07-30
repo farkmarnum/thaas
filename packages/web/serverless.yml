@@ -21,19 +21,20 @@ plugins:
 
 custom:
   customDomain:
-    stage: ${self:provider.stage}
     domainName: api.thaas.io
-    certificateName: thaas.io
+    stage: ${self:provider.stage}
     basePath: ''
+    certificateArn: arn:aws:acm:us-east-1:517918230755:certificate/a71f6489-08db-4eb5-b86f-30b7104f83f4
     createRoute53Record: true
+    createRoute53IPv6Record: true
+    endpointType: regional
   # serverless-frontend-plugin:
   #   distDir: frontend/dist
   #   build:
   #     cwdDir: frontend
   #     command: ['yarn', 'run', 'build']
   #   distribution:
-  #     acmCertificateArn: ${certificate:${self:custom.customCertificate.certificateName}:CertificateArn}
-  #     dnsName: <your-domain.com> # Route53 record value
-  #     altDnsName: <another.your-domain.com> # Route53 record value
-  #     hostedZoneName: <your-domain.com> # Route53 Hosted Zone Name
-
+  #     acmCertificateArn: arn:aws:acm:us-east-1:517918230755:certificate/a71f6489-08db-4eb5-b86f-30b7104f83f4
+  #     dnsName: thaas.io
+  #     altDnsName: www.thaas.io
+  #     hostedZoneName: thaas.io.

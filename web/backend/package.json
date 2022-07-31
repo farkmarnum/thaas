@@ -8,9 +8,5 @@
     "url": "git+https://github.com/farkmarnum/thaas.git"
   },
   "license": "MIT",
-  "private": true,
-  "dependencies": {
-    "express": "^4.18.1",
-    "serverless-http": "^3.0.1"
-  }
+  "private": true
 }

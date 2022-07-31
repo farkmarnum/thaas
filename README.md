@@ -17,7 +17,7 @@ todo
 
 Then, use the command in a PR comment:
 ```
-!thaas
+!hanks
 ```
 
 
@@ -29,7 +29,7 @@ First, install the Slack app for your organization.
 
 Then, use the command in a post:
 ```
-/thaas
+/hanks
 ```
 
 

@@ -11,9 +11,9 @@ features:
   bot_user:
     display_name: thaas
   slash_commands:
-    - command: /thaas
+    - command: /hanks
       description: Generate an image of Tom Hanks.
-      usage_hint: /thaas
+      usage_hint: /hanks
       url: https://api.thaas.io/api/v1/integrations/slack # NOTE: see https://api.slack.com/interactivity/slash-commands
 oauth_config:
   scopes:

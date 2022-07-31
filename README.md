@@ -44,6 +44,15 @@ curl -s https://api.thaas.io/api/v1/tom?params=here > tom.png
 This API is also the backend for all other platform integrations.
 
 
+## TODOs
+### On the roadmap
+- normalize the size of the toms (offline)
+- add some more toms (offline)
+- write the Slack integration
+- write the GitHub integration
+### Maybe someday
+- add params to API to specify which type of tom
+
 ## hom
 tanks
 

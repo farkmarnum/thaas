@@ -38,22 +38,32 @@ const installer = new InstallProvider({
   logLevel: LogLevel.DEBUG,
   installationStore: {
     storeInstallation: async (installation) => {
+      const value = JSON.stringify(installation);
+
       if (installation.isEnterpriseInstall) {
-        return ParameterStore.set(installation.enterprise.id, installation);
+        return ParameterStore.set(installation.enterprise.id, value);
       }
-      return ParameterStore.set(installation.team.id, installation);
+      return ParameterStore.set(installation.team.id, value);
     },
     fetchInstallation: async (installQuery) => {
+      let value;
+
       if (
         installQuery.isEnterpriseInstall &&
         installQuery.enterpriseId !== undefined
       ) {
-        return ParameterStore.get(installQuery.enterpriseId);
+        value = await ParameterStore.get(installQuery.enterpriseId);
       }
+
       if (installQuery.teamId !== undefined) {
-        return ParameterStore.get(installQuery.teamId);
+        value = await ParameterStore.get(installQuery.teamId);
       }
-      throw new Error('Failed fetching installation');
+
+      if (!value) {
+        throw new Error('Failed fetching installation');
+      }
+
+      return JSON.parse(value);
     },
     deleteInstallation: async (installQuery) => {
       if (
@@ -62,9 +72,11 @@ const installer = new InstallProvider({
       ) {
         return ParameterStore.del(installQuery.enterpriseId);
       }
+
       if (installQuery.teamId !== undefined) {
         return ParameterStore.del(installQuery.teamId);
       }
+
       throw new Error('Failed to delete installation');
     },
   },

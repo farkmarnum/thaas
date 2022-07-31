@@ -1,5 +1,10 @@
 locals {
   source_dir = "${path.module}/../../backend"
+  s3_bucket_name = "${var.name}-storage"
+}
+
+resource "aws_cloudfront_origin_access_identity" "origin_access_identity" {
+  comment = "Origin Access Identity for S3"
 }
 
 ###
@@ -9,17 +14,42 @@ module "s3_bucket" {
   source = "terraform-aws-modules/s3-bucket/aws"
   version = "3.0.1"
 
-  bucket = "${var.name}-storage"
+  bucket = local.s3_bucket_name
   acl    = "private"
+
+  attach_policy = true
+  policy = <<EOF
+{
+  "Id": "bucket_policy_site",
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "bucket_policy_site_root",
+      "Action": ["s3:ListBucket"],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::${local.s3_bucket_name}",
+      "Principal": {"AWS":"${aws_cloudfront_origin_access_identity.origin_access_identity.iam_arn}"}
+    },
+    {
+      "Sid": "bucket_policy_site_all",
+      "Action": ["s3:GetObject"],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::${local.s3_bucket_name}/*",
+      "Principal": {"AWS":"${aws_cloudfront_origin_access_identity.origin_access_identity.iam_arn}"}
+    }
+  ]
+}
+EOF
 }
 
 module "cloudfront" {
   source = "./cloudfront"
 
-  domain             = var.images_domain
-  bucket_domain_name = module.s3_bucket.s3_bucket_bucket_domain_name
-  certificate_arn    = var.acm_request_certificate_arn
-  hosted_zone_name   = var.hosted_zone_name
+  domain                          = var.images_domain
+  bucket_domain_name              = module.s3_bucket.s3_bucket_bucket_domain_name
+  certificate_arn                 = var.acm_request_certificate_arn
+  hosted_zone_name                = var.hosted_zone_name
+  cloudfront_access_identity_path = aws_cloudfront_origin_access_identity.origin_access_identity.cloudfront_access_identity_path
 
   tags = var.tags
 }

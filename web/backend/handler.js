@@ -6,12 +6,14 @@ const api = require('./helpers/api');
 
 const main = async (event) => {
   const {
-    queryStringParameters,
+    body: params,
     rawPath: path,
     requestContext: {
       http: { method },
     },
   } = event;
+
+  console.info(event);
 
   if (path === '/health' && method === 'GET') {
     return formatTextResponse('OK');
@@ -20,7 +22,7 @@ const main = async (event) => {
   if (path.startsWith('/api/v1')) {
     const subPath = path.replace(/^\/api\/v1/, '');
 
-    const response = api(subPath, method, queryStringParameters);
+    const response = api(subPath, method, params);
 
     if (response) {
       return response;

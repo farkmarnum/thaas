@@ -14,6 +14,10 @@ variable "certificate_arn" {
   type = string
 }
 
+variable "cloudfront_access_identity_path" {
+  type = string
+}
+
 variable "tags" {
   type = map(string)
 }

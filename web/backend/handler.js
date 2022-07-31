@@ -5,11 +5,6 @@ const apiRoutes = require('./helpers/api');
 
 const app = express();
 
-app.use((req, res, next) => {
-  console.log(req);
-  next();
-});
-
 app.get('/', (_req, res) =>
   res.status(400).json({
     message: 'Usage: GET /api/v1/tom',

@@ -25,6 +25,7 @@ module "lambda_function" {
   runtime       = "nodejs16.x"
   source_path   = local.source_dir
 
+  # Allow Lambda to access S3:
   attach_policy_json = true
   policy_json        = <<EOF
 {
@@ -45,6 +46,14 @@ module "lambda_function" {
     ]
 }
 EOF
+
+  # Allow API Gateway to invoke Lambda:
+  allowed_triggers = {
+    AllowExecutionFromAPIGateway = {
+      service    = "apigateway"
+      source_arn = "${module.api_gateway.apigatewayv2_api_execution_arn}/*/*"
+    }
+  }
 
   tags = var.tags
 }

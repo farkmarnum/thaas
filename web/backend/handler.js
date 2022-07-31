@@ -15,7 +15,7 @@ const main = async (event) => {
   }
 
   if (path.startsWith('/api/v1')) {
-    const subPath = api.replace(/^\/api\/v1/, '');
+    const subPath = path.replace(/^\/api\/v1/, '');
 
     const response = api(subPath, method);
 

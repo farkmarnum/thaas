@@ -25,28 +25,26 @@ module "lambda_function" {
   runtime       = "nodejs16.x"
   source_path   = local.source_dir
 
-  policy_json = <<EOF
-    {
-      "Version": "2012-10-17",
-      "Statement": [
-        {
-          "Sid": "S3ReadOnly",
-          "Effect": "Allow",
-          "Action": [
-            "s3:ListBucket",
-            "s3:GetObject",
-            "s3:GetObjectVersion"
-          ],
-          "Resource": [
-            "${module.s3_bucket.s3_bucket_arn}",
-            "${module.s3_bucket.s3_bucket_arn}/*"
-          ]
-        }
-      ]
-    }
-  EOF
-
   attach_policy_json = true
+  policy_json        = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:ListBucket",
+                "s3:GetObject",
+                "s3:GetObjectVersion"
+            ],
+            "Resource": [
+                "${module.s3_bucket.s3_bucket_arn}",
+                "${module.s3_bucket.s3_bucket_arn}/*"
+            ]
+        }
+    ]
+}
+EOF
 
   tags = var.tags
 }

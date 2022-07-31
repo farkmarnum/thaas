@@ -6,7 +6,12 @@ module.exports = {
   plugins: ['prettier'],
   rules: {
     'prettier/prettier': 'error',
+
     indent: 'off',
     'implicit-arrow-linebreak': 'off',
+    'operator-linebreak': 'off',
+    'max-len': 'off',
+    'comma-dangle': 'off',
+    'function-paren-newline': 'off',
   },
 };

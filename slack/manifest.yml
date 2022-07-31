@@ -12,6 +12,8 @@ features:
       usage_hint: /hanks
       should_escape: false
 oauth_config:
+  redirect_urls:
+    - https://api.thaas.io/api/v1/integrations/slack/oath
   scopes:
     bot:
       - commands

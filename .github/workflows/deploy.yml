@@ -31,6 +31,9 @@ jobs:
         env:
           TF_VAR_domain: ${{ env.DOMAIN }}
           TF_VAR_service: ${{ env.SERVICE }}
+          TF_VAR_SLACK_CLIENT_ID: ${{ secrets.SLACK_CLIENT_ID }}
+          TF_VAR_SLACK_CLIENT_SECRET: ${{ secrets.SLACK_CLIENT_SECRET }}
+          TF_VAR_SLACK_STATE_SECRET: ${{ secrets.SLACK_STATE_SECRET }}
         run: |
           terraform init
           terraform validate -no-color

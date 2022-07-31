@@ -1,6 +1,10 @@
+data "aws_caller_identity" "current" {}
+
 locals {
   source_dir = "${path.module}/../../backend"
   s3_bucket_name = "${var.name}-storage"
+  aws_account_id = data.aws_caller_identity.current.account_id
+  ssm_prefix = "${var.name}/"
 }
 
 resource "aws_cloudfront_origin_access_identity" "origin_access_identity" {
@@ -40,6 +44,8 @@ module "s3_bucket" {
   ]
 }
 EOF
+
+  tags = var.tags
 }
 
 module "cloudfront" {
@@ -55,7 +61,7 @@ module "cloudfront" {
 }
 
 ###
-### LAMBDA
+### 
 ###
 module "lambda_function" {
   source = "terraform-aws-modules/lambda/aws"
@@ -69,11 +75,16 @@ module "lambda_function" {
   publish = true
 
   environment_variables = {
-    S3_BUCKET_NAME = module.s3_bucket.s3_bucket_id
-    IMAGES_DOMAIN  = var.images_domain
+    S3_BUCKET_NAME      = module.s3_bucket.s3_bucket_id
+    IMAGES_DOMAIN       = var.images_domain
+    BACKEND_DOMAIN      = var.domain
+    SLACK_CLIENT_ID     = var.SLACK_CLIENT_ID
+    SLACK_CLIENT_SECRET = var.SLACK_CLIENT_SECRET
+    SLACK_STATE_SECRET  = var.SLACK_STATE_SECRET
+    SSM_PREFIX          = local.ssm_prefix
   }
 
-  # Allow Lambda to access S3:
+  # Allow Lambda to access S3 and SSM Parameter Store:
   attach_policy_json = true
   policy_json        = <<EOF
 {
@@ -90,6 +101,24 @@ module "lambda_function" {
                 "${module.s3_bucket.s3_bucket_arn}",
                 "${module.s3_bucket.s3_bucket_arn}/*"
             ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ssm:PutParameter",
+                "ssm:DeleteParameter",
+                "ssm:GetParameterHistory",
+                "ssm:GetParametersByPath",
+                "ssm:GetParameters",
+                "ssm:GetParameter",
+                "ssm:DeleteParameters"
+            ],
+            "Resource": "arn:aws:ssm:us-east-2:${local.aws_account_id}:parameter/${local.ssm_prefix}*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": "ssm:DescribeParameters",
+            "Resource": "*"
         }
     ]
 }

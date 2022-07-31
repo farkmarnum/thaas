@@ -31,7 +31,7 @@ const del = (param) =>
     });
   });
 
-module.export = {
+module.exports = {
   get,
   set,
   del,

@@ -31,56 +31,50 @@ const handleCommand = async ({ command }) => {
   };
 };
 
-const handleOAuth = (req, res) => {
-  const installer = new InstallProvider({
-    clientId: process.env.SLACK_CLIENT_ID,
-    clientSecret: process.env.SLACK_CLIENT_SECRET,
-    stateSecret: process.env.SLACK_STATE_SECRET,
-    logLevel: LogLevel.DEBUG,
-    installationStore: {
-      storeInstallation: async (installation) => {
-        // replace myDB.set with your own database or OEM setter
-        if (installation.isEnterpriseInstall) {
-          // support for org wide app installation
-          return ParameterStore.set(installation.enterprise.id, installation);
-        }
-        // single team app installation
-        return ParameterStore.set(installation.team.id, installation);
-      },
-      fetchInstallation: async (installQuery) => {
-        // replace myDB.get with your own database or OEM getter
-        if (
-          installQuery.isEnterpriseInstall &&
-          installQuery.enterpriseId !== undefined
-        ) {
-          // org wide app installation lookup
-          return ParameterStore.get(installQuery.enterpriseId);
-        }
-        if (installQuery.teamId !== undefined) {
-          // single team app installation lookup
-          return ParameterStore.get(installQuery.teamId);
-        }
-        throw new Error('Failed fetching installation');
-      },
-      deleteInstallation: async (installQuery) => {
-        // replace myDB.get with your own database or OEM getter
-        if (
-          installQuery.isEnterpriseInstall &&
-          installQuery.enterpriseId !== undefined
-        ) {
-          // org wide app installation deletion
-          return ParameterStore.del(installQuery.enterpriseId);
-        }
-        if (installQuery.teamId !== undefined) {
-          // single team app installation deletion
-          return ParameterStore.del(installQuery.teamId);
-        }
-        throw new Error('Failed to delete installation');
-      },
+const installer = new InstallProvider({
+  clientId: process.env.SLACK_CLIENT_ID,
+  clientSecret: process.env.SLACK_CLIENT_SECRET,
+  stateSecret: process.env.SLACK_STATE_SECRET,
+  logLevel: LogLevel.DEBUG,
+  installationStore: {
+    storeInstallation: async (installation) => {
+      if (installation.isEnterpriseInstall) {
+        return ParameterStore.set(installation.enterprise.id, installation);
+      }
+      return ParameterStore.set(installation.team.id, installation);
     },
+    fetchInstallation: async (installQuery) => {
+      if (
+        installQuery.isEnterpriseInstall &&
+        installQuery.enterpriseId !== undefined
+      ) {
+        return ParameterStore.get(installQuery.enterpriseId);
+      }
+      if (installQuery.teamId !== undefined) {
+        return ParameterStore.get(installQuery.teamId);
+      }
+      throw new Error('Failed fetching installation');
+    },
+    deleteInstallation: async (installQuery) => {
+      if (
+        installQuery.isEnterpriseInstall &&
+        installQuery.enterpriseId !== undefined
+      ) {
+        return ParameterStore.del(installQuery.enterpriseId);
+      }
+      if (installQuery.teamId !== undefined) {
+        return ParameterStore.del(installQuery.teamId);
+      }
+      throw new Error('Failed to delete installation');
+    },
+  },
+});
+
+const handleSlackOAuth = async (req, res) => installer.handleCallback(req, res);
+
+const handleSlackInstall = async (req, res) =>
+  installer.handleInstallPath(req, res, {
+    scopes: ['commands', 'chat:write', 'chat:write.public'],
   });
 
-  return installer.handleCallback(req, res);
-};
-
-module.exports = { handleCommand, handleOAuth };
+module.exports = { handleCommand, handleSlackOAuth, handleSlackInstall };

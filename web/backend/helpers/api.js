@@ -3,7 +3,11 @@ const url = require('url');
 const router = require('express').Router();
 
 const { listObjects, getObject } = require('./s3');
-const { handleCommand, handleOAuth } = require('./slack');
+const {
+  handleCommand,
+  handleSlackOAuth,
+  handleSlackInstall,
+} = require('./slack');
 
 router.get('/tom', async (_req, res) => {
   const objects = await listObjects();
@@ -24,7 +28,13 @@ router.post('/integrations/slack', async (req, res) => {
 });
 
 router.get('/integrations/slack/oauth', async (req, res) => {
-  await handleOAuth(req, res);
+  console.log(req.query, req.body);
+  await handleSlackOAuth(req, res);
+});
+
+router.get('/integrations/slack/install', async (req, res) => {
+  console.log(req.query, req.body);
+  await handleSlackInstall(req, res);
 });
 
 router.post('/integrations/github', async (_req, res) => {

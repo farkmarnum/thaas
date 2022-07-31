@@ -113,7 +113,7 @@ module "lambda_function" {
                 "ssm:GetParameter",
                 "ssm:DeleteParameters"
             ],
-            "Resource": "arn:aws:ssm:us-east-2:${local.aws_account_id}:parameter/${local.ssm_prefix}*"
+            "Resource": "arn:aws:ssm:us-east-1:${local.aws_account_id}:parameter/${local.ssm_prefix}*"
         },
         {
             "Effect": "Allow",

@@ -19,12 +19,12 @@ const api = async (path, method, params) => {
     }
   } else if (method === 'POST') {
     switch (path) {
-      case '/slack': {
+      case '/integrations/slack': {
         const output = await handleCommand(params);
         return formatJSONResponse(output);
       }
 
-      case '/github':
+      case '/integrations/github':
         return formatJSONResponse({ message: 'TODO: GitHub integration' });
 
       default:

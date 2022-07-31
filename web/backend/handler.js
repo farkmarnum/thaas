@@ -1,3 +1,5 @@
+const url = require('url');
+
 const {
   formatTextResponse,
   formatJSONResponse,
@@ -22,7 +24,10 @@ const main = async (event) => {
   if (path.startsWith('/api/v1')) {
     const subPath = path.replace(/^\/api\/v1/, '');
 
-    const params = JSON.parse(body);
+    const paramString = Buffer.from(body, 'base64').toString('ascii');
+    const paramsParsed = url.parse(`example.com/?${paramString}`, true).query;
+    const params = { ...paramsParsed };
+
     const response = api(subPath, method, params);
 
     if (response) {

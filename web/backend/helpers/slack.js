@@ -68,13 +68,14 @@ const installer = new InstallProvider({
       throw new Error('Failed to delete installation');
     },
   },
+  installUrlOptions: {
+    scopes: ['commands', 'chat:write', 'chat:write.public'],
+  },
 });
 
 const handleSlackOAuth = async (req, res) => installer.handleCallback(req, res);
 
 const handleSlackInstall = async (req, res) =>
-  installer.handleInstallPath(req, res, {
-    scopes: ['commands', 'chat:write', 'chat:write.public'],
-  });
+  installer.handleInstallPath(req, res);
 
 module.exports = { handleCommand, handleSlackOAuth, handleSlackInstall };

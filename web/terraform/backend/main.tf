@@ -1,5 +1,5 @@
 locals {
-  source_dir = "${path.module}/../../../backend"
+  source_dir = "${path.module}/../../backend"
 }
 
 ###

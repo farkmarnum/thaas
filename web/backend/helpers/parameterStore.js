@@ -17,10 +17,13 @@ const get = (param) =>
 
 const set = (param, value) =>
   new Promise((resolve, reject) => {
-    ssm.putParameter({ Name: prefix(param), Value: value }, (err, data) => {
-      if (err) reject(err);
-      else resolve(data);
-    });
+    ssm.putParameter(
+      { Type: 'String', Name: prefix(param), Value: value },
+      (err, data) => {
+        if (err) reject(err);
+        else resolve(data);
+      },
+    );
   });
 
 const del = (param) =>

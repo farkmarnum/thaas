@@ -1,13 +1,9 @@
-const handler = (event) => {
+const { formatResponse } = require('./helpers');
+
+const handler = async (event) => {
   console.log(event)
 
-  return {
-    statusCode: 200,
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: json.dumps({ received: event }),
-  }
+  return formatResponse({ received: event });
 }
 
 module.exports = { handler };

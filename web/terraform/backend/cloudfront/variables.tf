@@ -2,11 +2,7 @@ variable "domain" {
   type = string
 }
 
-variable "images_domain" {
-  type = string
-}
-
-variable "acm_request_certificate_arn" {
+variable "bucket_domain_name" {
   type = string
 }
 
@@ -14,7 +10,7 @@ variable "hosted_zone_name" {
   type = string
 }
 
-variable "name" {
+variable "certificate_arn" {
   type = string
 }
 

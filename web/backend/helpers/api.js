@@ -1,7 +1,8 @@
 const { listObjects, getObject } = require('./s3');
 const { formatJSONResponse, formatFileResponse } = require('./response');
+const { handleCommand } = require('./slack');
 
-const api = async (path, method) => {
+const api = async (path, method, params) => {
   if (method === 'GET') {
     switch (path) {
       case '/tom': {
@@ -18,13 +19,10 @@ const api = async (path, method) => {
     }
   } else if (method === 'POST') {
     switch (path) {
-      case '/slack':
-        return formatJSONResponse({ message: 'TODO: Slack integration' });
-
-      case '/slack/oauth':
-        return formatJSONResponse({
-          message: 'TODO: Slack integration - OAuth',
-        });
+      case '/slack': {
+        const output = handleCommand(params);
+        return formatJSONResponse(output);
+      }
 
       case '/github':
         return formatJSONResponse({ message: 'TODO: GitHub integration' });

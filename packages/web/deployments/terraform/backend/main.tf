@@ -1,5 +1,5 @@
 locals {
-  source_dir = "../../../backend"
+  source_dir = "${path.module}/../../../backend"
 }
 
 ###
@@ -22,7 +22,7 @@ module "lambda_function" {
 
   function_name = var.name
   handler       = "handler.handler"
-  runtime       = "nodejs16"
+  runtime       = "nodejs16.x"
   source_path   = local.source_dir
 
   policy_json = <<EOF

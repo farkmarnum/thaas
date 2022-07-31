@@ -1,4 +1,7 @@
-const formatResponse = require('./helpers/formatResponse');
+const {
+  formatTextResponse,
+  formatJSONResponse,
+} = require('./helpers/response');
 const api = require('./helpers/api');
 
 const main = async (event) => {
@@ -11,7 +14,7 @@ const main = async (event) => {
   } = event;
 
   if (path === '/health' && method === 'GET') {
-    return formatResponse({ message: 'OK' });
+    return formatTextResponse('OK');
   }
 
   if (path.startsWith('/api/v1')) {
@@ -20,11 +23,11 @@ const main = async (event) => {
     const response = api(subPath, method);
 
     if (response) {
-      return formatResponse(response);
+      return response;
     }
   }
 
-  return formatResponse({ message: 'Not Found' }, 404);
+  return formatJSONResponse({ message: 'Not Found' }, 404);
 };
 
 module.exports = { handler: main };

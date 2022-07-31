@@ -24,5 +24,4 @@ router.post("/integrations/github", (req, res, next) => {
   });
 });
 
-
 module.exports = router;

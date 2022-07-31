@@ -18,6 +18,18 @@ variable "name" {
   type = string
 }
 
+variable "SLACK_CLIENT_ID" {
+  type = string
+}
+
+variable "SLACK_CLIENT_SECRET" {
+  type = string
+}
+
+variable "SLACK_STATE_SECRET" {
+  type = string
+}
+
 variable "tags" {
   type = map(string)
 }

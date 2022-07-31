@@ -1,38 +1,33 @@
+const url = require('url');
+
+const router = require('serverless-express/express').Router();
+
 const { listObjects, getObject } = require('./s3');
-const { formatJSONResponse, formatFileResponse } = require('./response');
-const { handleCommand } = require('./slack');
+const { handleCommand, handleOAuth } = require('./slack');
 
-const api = async (path, method, params) => {
-  if (method === 'GET') {
-    switch (path) {
-      case '/tom': {
-        const objects = await listObjects();
-        const index = Math.floor(objects.length * Math.random());
-        const object = objects[index];
-        const imageData = await getObject(object);
+router.get('/tom', async (_req, res) => {
+  const objects = await listObjects();
+  const index = Math.floor(objects.length * Math.random());
+  const object = objects[index];
+  const imageData = await getObject(object);
 
-        return formatFileResponse(imageData);
-      }
+  res.sendFile(imageData);
+});
 
-      default:
-        return null;
-    }
-  } else if (method === 'POST') {
-    switch (path) {
-      case '/integrations/slack': {
-        const output = await handleCommand(params);
-        return formatJSONResponse(output);
-      }
+router.post('/integrations/slack', async (req, res) => {
+  const paramString = Buffer.from(req.body, 'base64').toString('ascii');
+  const paramsParsed = url.parse(`example.com/?${paramString}`, true).query;
+  const bodyParams = { ...paramsParsed };
 
-      case '/integrations/github':
-        return formatJSONResponse({ message: 'TODO: GitHub integration' });
+  res.json(await handleCommand(bodyParams));
+});
 
-      default:
-        return null;
-    }
-  }
+router.get('/integrations/slack/oauth', async (req, res) => {
+  await handleOAuth(req, res);
+});
 
-  return null;
-};
+router.post('/integrations/github', async (_req, res) => {
+  res.json({ message: 'TODO: GitHub integration' });
+});
 
-module.exports = api;
+module.exports = router;

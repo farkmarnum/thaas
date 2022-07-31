@@ -21,6 +21,8 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "aws-sdk": "^2.1185.0"
+    "@slack/oauth": "^2.5.4",
+    "aws-sdk": "^2.1185.0",
+    "serverless-express": "^2.0.12"
   }
 }

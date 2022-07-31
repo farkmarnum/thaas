@@ -1,41 +1,24 @@
-const url = require('url');
+const express = require('serverless-express/express');
+const handler = require('serverless-express/handler');
 
-const {
-  formatTextResponse,
-  formatJSONResponse,
-} = require('./helpers/response');
-const api = require('./helpers/api');
+const apiRoutes = require('./helpers/api');
 
-const main = async (event) => {
-  const {
-    body,
-    rawPath: path,
-    requestContext: {
-      http: { method },
-    },
-  } = event;
+const app = express();
 
-  console.info(event);
+app.get('/', (_req, res) =>
+  res.status(400).json({
+    message: 'Usage: GET /api/v1/tom',
+  }),
+);
 
-  if (path === '/health' && method === 'GET') {
-    return formatTextResponse('OK');
-  }
+app.get('/health', (_req, res) => res.sendStatus(200));
 
-  if (path.startsWith('/api/v1')) {
-    const subPath = path.replace(/^\/api\/v1/, '');
+app.use('/api/v1', apiRoutes);
 
-    const paramString = Buffer.from(body, 'base64').toString('ascii');
-    const paramsParsed = url.parse(`example.com/?${paramString}`, true).query;
-    const params = { ...paramsParsed };
+app.use((_req, res) =>
+  res.status(404).json({
+    error: 'Not Found',
+  }),
+);
 
-    const response = api(subPath, method, params);
-
-    if (response) {
-      return response;
-    }
-  }
-
-  return formatJSONResponse({ message: 'Not Found' }, 404);
-};
-
-module.exports = { handler: main };
+module.exports = { handler: handler(app) };

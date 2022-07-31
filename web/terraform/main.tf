@@ -36,5 +36,9 @@ module "backend" {
   hosted_zone_name            = "${var.domain}."
   acm_request_certificate_arn = module.acm_request_certificate.arn
 
+  SLACK_CLIENT_ID     = var.SLACK_CLIENT_ID
+  SLACK_CLIENT_SECRET = var.SLACK_CLIENT_SECRET
+  SLACK_STATE_SECRET  = var.SLACK_STATE_SECRET
+
   tags = var.tags
 }

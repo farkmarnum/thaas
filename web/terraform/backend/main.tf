@@ -72,3 +72,22 @@ module "api_gateway" {
 
   tags = var.tags
 }
+
+###
+### ROUTE 53 (DNS)
+###
+data "aws_route53_zone" "primary" {
+  name = var.hosted_zone_name
+}
+
+resource "aws_route53_record" "subdomain" {
+  zone_id = "${data.aws_route53_zone.primary.zone_id}"
+  name    = var.domain
+  type    = "A"
+
+  alias {
+    name = module.api_gateway.apigatewayv2_domain_name_target_domain_name
+    zone_id = module.api_gateway.apigatewayv2_domain_name_hosted_zone_id
+    evaluate_target_health = false
+  }
+}

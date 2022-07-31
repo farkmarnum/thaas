@@ -32,6 +32,7 @@ module "backend" {
 
   domain                      = "api.${var.domain}"
   name                        = var.service
+  hosted_zone_name            = "${var.domain}."
   acm_request_certificate_arn = module.acm_request_certificate.arn
 
   tags = var.tags

@@ -4,4 +4,4 @@ author: 'Mark Farnum'
 # TODO: add inputs
 runs:
   using: 'node16'
-  main: 'packages/action/dist/index.js'
+  main: 'action/dist/index.js'

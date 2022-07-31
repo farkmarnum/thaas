@@ -27,7 +27,7 @@ jobs:
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
       - name: Terraform
-        working-directory: deployments/terraform
+        working-directory: web/terraform
         env:
           TF_VAR_domain: ${{ env.DOMAIN }}
           TF_VAR_service: ${{ env.SERVICE }}

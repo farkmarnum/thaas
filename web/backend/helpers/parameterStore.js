@@ -4,7 +4,7 @@ const ssm = new AWS.SSM({ apiVersion: '2014-11-06' });
 
 const { SSM_PREFIX } = process.env;
 
-const PREFIX = `${SSM_PREFIX}slack/`;
+const PREFIX = `${SSM_PREFIX}/slack/`;
 const prefix = (s) => `${PREFIX}${s}`;
 
 const get = (param) =>

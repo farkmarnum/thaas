@@ -21,4 +21,6 @@ app.use((_req, res) =>
   }),
 );
 
-module.handler = wrapper({ app });
+module.exports = {
+  handler: wrapper({ app }),
+};

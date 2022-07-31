@@ -27,6 +27,10 @@ module "lambda_function" {
 
   publish = true
 
+  environment_variables = {
+    S3_BUCKET_NAME = module.s3_bucket.s3_bucket_id
+  }
+
   # Allow Lambda to access S3:
   attach_policy_json = true
   policy_json        = <<EOF

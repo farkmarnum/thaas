@@ -19,5 +19,8 @@
   },
   "scripts": {
     "lint": "eslint ."
+  },
+  "dependencies": {
+    "aws-sdk": "^2.1185.0"
   }
 }

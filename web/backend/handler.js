@@ -13,6 +13,8 @@ const main = async (event) => {
     },
   } = event;
 
+  console.info(event);
+
   if (path === '/health' && method === 'GET') {
     return formatTextResponse('OK');
   }

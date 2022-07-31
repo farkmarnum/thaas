@@ -63,6 +63,12 @@ module "api_gateway" {
   domain_name_certificate_arn = var.acm_request_certificate_arn
 
   integrations = {
+    "ANY /{path+}" = {
+      lambda_arn             = module.lambda_function.lambda_function_arn
+      payload_format_version = "2.0"
+      timeout_milliseconds   = 5000
+    }
+
     "$default" = {
       lambda_arn = module.lambda_function.lambda_function_arn
     }

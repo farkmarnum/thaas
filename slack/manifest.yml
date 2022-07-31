@@ -9,11 +9,10 @@ features:
     - command: /hanks
       url: https://api.thaas.io/api/v1/integrations/slack
       description: Generate an image of Tom Hanks.
-      usage_hint: /hanks
       should_escape: false
 oauth_config:
   redirect_urls:
-    - https://api.thaas.io/api/v1/integrations/slack/oath
+    - https://api.thaas.io/api/v1/integrations/slack/oauth
   scopes:
     bot:
       - commands

@@ -45,12 +45,12 @@ This API is also the backend for all other platform integrations.
 
 
 ## TODOs
-### On the roadmap
-- normalize the size of the toms (offline)
-- add some more toms (offline)
+### Top priority
 - write the Slack integration
 - write the GitHub integration
-### Maybe someday
+### Other
+- switch to using @vendia/serverless-express or similar for backend
+- add some more toms (offline)
 - add params to API to specify which type of tom
 
 ## hom

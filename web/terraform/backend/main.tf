@@ -13,6 +13,17 @@ module "s3_bucket" {
   acl    = "private"
 }
 
+module "cloudfront" {
+  source = "./cloudfront"
+
+  domain             = var.images_domain
+  bucket_domain_name = module.s3_bucket.s3_bucket_bucket_domain_name
+  certificate_arn    = var.acm_request_certificate_arn
+  hosted_zone_name   = var.hosted_zone_name
+
+  tags = var.tags
+}
+
 ###
 ### LAMBDA
 ###
@@ -29,6 +40,7 @@ module "lambda_function" {
 
   environment_variables = {
     S3_BUCKET_NAME = module.s3_bucket.s3_bucket_id
+    IMAGES_DOMAIN  = var.images_domain
   }
 
   # Allow Lambda to access S3:

@@ -1,0 +1,39 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  DOMAIN: thaas.io
+
+  SERVICE: thaas
+
+  AWS_REGION: us-east-1
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+jobs:
+  deploy:
+    name: Deploy infrastructure
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.2.5
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+      - name: Terraform
+        working-directory: deployments/terraform
+        env:
+          TF_VAR_domain: ${{ env.DOMAIN }}
+          TF_VAR_service: ${{ env.SERVICE }}
+        run: |
+          terraform init
+          terraform validate -no-color
+          terraform plan -no-color
+          terraform apply -auto-approve

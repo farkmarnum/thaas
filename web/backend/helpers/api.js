@@ -6,11 +6,8 @@ const api = async (path, method) => {
     switch (path) {
       case '/tom': {
         const objects = await listObjects();
-        console.log(objects);
         const index = Math.floor(objects.length * Math.random());
-        console.log(index);
         const object = objects[index];
-        console.log(object);
         const imageData = await getObject(object);
 
         return formatFileResponse(imageData);

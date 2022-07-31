@@ -1,9 +1,30 @@
-const { formatResponse } = require('./helpers/formatResponse');
+const formatResponse = require('./helpers/formatResponse');
+const api = require('./helpers/api');
 
-const handler = async (event) => {
-  console.log(event);
+const main = async (event) => {
+  const {
+    // queryStringParameters,
+    rawPath: path,
+    requestContext: {
+      http: { method },
+    },
+  } = event;
 
-  return formatResponse({ received: event });
+  if (path === '/health' && method === 'GET') {
+    return formatResponse({ message: 'OK' });
+  }
+
+  if (path.startsWith('/api/v1')) {
+    const subPath = api.replace(/^\/api\/v1/, '');
+
+    const response = api(subPath, method);
+
+    if (response) {
+      return formatResponse(response);
+    }
+  }
+
+  return formatResponse({ message: 'Not Found' }, 404);
 };
 
-module.exports = { handler };
+module.exports = { handler: main };

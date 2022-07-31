@@ -1,11 +1,9 @@
-const formatResponse = (response) => ({
-  statusCode: 200,
+const formatResponse = (response, statusCode) => ({
+  statusCode: statusCode || 200,
   headers: {
     'Content-Type': 'application/json',
   },
   body: JSON.stringify(response),
 });
 
-module.exports = {
-  formatResponse,
-};
+module.exports = formatResponse;

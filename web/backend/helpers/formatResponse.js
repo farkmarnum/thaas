@@ -1,7 +1,7 @@
-const formatResponse = response => ({
+const formatResponse = (response) => ({
   statusCode: 200,
   headers: {
-    "Content-Type": "application/json"
+    'Content-Type': 'application/json',
   },
   body: JSON.stringify(response),
 });

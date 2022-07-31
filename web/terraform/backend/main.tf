@@ -25,6 +25,8 @@ module "lambda_function" {
   runtime       = "nodejs16.x"
   source_path   = local.source_dir
 
+  publish = true
+
   # Allow Lambda to access S3:
   attach_policy_json = true
   policy_json        = <<EOF

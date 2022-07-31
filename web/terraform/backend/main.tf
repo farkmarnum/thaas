@@ -4,7 +4,7 @@ locals {
   source_dir = "${path.module}/../../backend"
   s3_bucket_name = "${var.name}-storage"
   aws_account_id = data.aws_caller_identity.current.account_id
-  ssm_prefix = "${var.name}/"
+  ssm_prefix = "/${var.name}"
 }
 
 resource "aws_cloudfront_origin_access_identity" "origin_access_identity" {
@@ -113,7 +113,7 @@ module "lambda_function" {
                 "ssm:GetParameter",
                 "ssm:DeleteParameters"
             ],
-            "Resource": "arn:aws:ssm:us-east-1:${local.aws_account_id}:parameter/${local.ssm_prefix}*"
+            "Resource": "arn:aws:ssm:*:${local.aws_account_id}:parameter${local.ssm_prefix}/*"
         },
         {
             "Effect": "Allow",

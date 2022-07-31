@@ -22,7 +22,8 @@
   },
   "dependencies": {
     "@slack/oauth": "^2.5.4",
+    "@vendia/serverless-express": "^4.10.1",
     "aws-sdk": "^2.1185.0",
-    "serverless-express": "^2.0.12"
+    "express": "^4.18.1"
   }
 }

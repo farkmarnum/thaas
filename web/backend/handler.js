@@ -1,5 +1,5 @@
-const express = require('serverless-express/express');
-const handler = require('serverless-express/handler');
+const express = require('express');
+const wrapper = require('@vendia/serverless-express');
 
 const apiRoutes = require('./helpers/api');
 
@@ -21,4 +21,4 @@ app.use((_req, res) =>
   }),
 );
 
-module.exports = { handler: handler(app) };
+module.handler = wrapper({ app });

@@ -20,7 +20,7 @@ const api = async (path, method, params) => {
   } else if (method === 'POST') {
     switch (path) {
       case '/slack': {
-        const output = handleCommand(params);
+        const output = await handleCommand(params);
         return formatJSONResponse(output);
       }
 

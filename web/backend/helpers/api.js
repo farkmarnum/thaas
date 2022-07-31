@@ -1,6 +1,6 @@
 const url = require('url');
 
-const router = require('serverless-express/express').Router();
+const router = require('express').Router();
 
 const { listObjects, getObject } = require('./s3');
 const { handleCommand, handleOAuth } = require('./slack');

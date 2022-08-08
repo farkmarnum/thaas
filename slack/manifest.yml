@@ -1,9 +1,9 @@
 display_information:
-  name: thaas
+  name: THaaS
   description: Tom Hanks As A Service
 features:
   bot_user:
-    display_name: thaas
+    display_name: THaaS
     always_online: false
   slash_commands:
     - command: /hanks

@@ -1,11 +1,6 @@
 import fetch from 'node-fetch';
 import { Probot, Context } from "probot";
-import {
-  PullRequestReviewSubmittedEvent,
-  IssueCommentCreatedEvent,
-  CommitCommentCreatedEvent,
-  PullRequestReviewCommentCreatedEvent,
-} from "@octokit/webhooks-types/schema";
+import { EmitterWebhookEvent as WebhookEvent } from "@octokit/webhooks";
 
 const hasCommand = (commentBody: string | null | undefined) => commentBody && /^!hanks\b/m.test(commentBody);
 
@@ -17,18 +12,8 @@ const COMMIT_COMMENT_CREATED = 'commit_comment.created';
 const PR_DIFF_COMMENT_CREATED = 'pull_request_review_comment.created';
 const PR_REVIEW_CREATED = 'pull_request_review.submitted';
 
-type IssueCommentContext = Context<typeof ISSUE_COMMENT_CREATED>
-type CommitCommentCreatedContext = Context<typeof COMMIT_COMMENT_CREATED>;
-type PrDiffCommentCreatedContext = Context<typeof PR_DIFF_COMMENT_CREATED>;
-type PrReviewCreatedContext = Context<typeof PR_REVIEW_CREATED>;
-
-type CommentContext = IssueCommentContext | CommitCommentCreatedContext | PrDiffCommentCreatedContext;
-type ReviewContext = PrReviewCreatedContext;
-
-type AnyContext = CommentContext | ReviewContext;
-
-type CommentPayload = IssueCommentCreatedEvent | CommitCommentCreatedEvent | PullRequestReviewCommentCreatedEvent;
-type ReviewPayload = PullRequestReviewSubmittedEvent;
+type CommentEvents = typeof ISSUE_COMMENT_CREATED | typeof COMMIT_COMMENT_CREATED | typeof PR_DIFF_COMMENT_CREATED
+type ReviewEvents = typeof PR_REVIEW_CREATED;
 
 /* Generate tom image URL: */
 const getTomUrl = async () => {
@@ -44,36 +29,41 @@ const getTomUrl = async () => {
   return imageUrl;
 }
 
-const getOriginalCommentUrl = (context: AnyContext): string => {
-  const commentPayload = context.payload as CommentPayload;
+const getOriginalCommentUrl = (context: Context): string => {
+  const commentPayload = context.payload as unknown as WebhookEvent<CommentEvents>['payload'];
   if (commentPayload.comment) return commentPayload.comment.html_url;
-
-  const reviewPayload = context.payload as ReviewPayload;
+  
+  const reviewPayload = context.payload as unknown as WebhookEvent<ReviewEvents>['payload'];
   return reviewPayload.review.html_url;
 }
 
-/* Generate comment text: */
-const getCommentBody = async (context: AnyContext) => {
+/**
+ * Generate comment text.
+ * 
+ * NOTE: context should be Context, but TypeScript complains that "Expression produces a union type that is too complex to represent."
+ * @see https://github.com/probot/probot/issues/1680
+ */
+const getCommentBody = async (context: any): Promise<string> => {
   const imageUrl = await getTomUrl();
   const originalCommentUrl = getOriginalCommentUrl(context);
 
-  // const body = `![tom hanks](${imageUrl})\n\n<sup>I am a [bot](${HOMEPAGE})</sup>, responding to a [comment](${originalCommentUrl}).`;
+  const body = `![tom hanks](${imageUrl})\n\n<sup>I am a [bot](${HOMEPAGE})</sup>, responding to a [comment](${originalCommentUrl}).`;
 
-  return '';
+  return body;
 }
 
-const isValid = (context: AnyContext) => {
+const isValid = (context: Context) => {
   if (context.isBot) return false;
 
-  const commentPayload = context.payload as CommentPayload;
+  const commentPayload = context.payload as unknown as WebhookEvent<CommentEvents>['payload'];
   if (commentPayload.comment) return hasCommand(commentPayload.comment.body);
 
-  const reviewPayload = context.payload as ReviewPayload;
+  const reviewPayload = context.payload as unknown as WebhookEvent<ReviewEvents>['payload'];
   return hasCommand(reviewPayload.review.body);
 };
 
 /* Create comment on an issue: */
-const createIssueComment = async (context: AnyContext) => {
+const createIssueComment = async (context: Context) => {
   const body = await getCommentBody(context);
 
   return context.octokit.issues.createComment(
@@ -82,7 +72,7 @@ const createIssueComment = async (context: AnyContext) => {
 }
 
 /* Reply to a PR comment (in the diff): */
-const createPrDiffComment = async (context: PrDiffCommentCreatedContext) => {
+const createPrDiffComment = async (context: Context<typeof PR_DIFF_COMMENT_CREATED>) => {
   const body = await getCommentBody(context);
 
   return context.octokit.rest.pulls.createReplyForReviewComment(

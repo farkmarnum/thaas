@@ -40,11 +40,9 @@ This API is also the backend for all other platform integrations.
 
 
 ## TODOs
-### Top priority
-- write the GitHub integration
-### Other
 - add some more toms (offline)
 - add params to API to specify which type of tom
+
 
 ## hom
 tanks

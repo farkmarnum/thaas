@@ -1,5 +1,5 @@
 locals {
-  source_dir = "${path.module}/../../frontend"
+  source_dir = "${path.module}/../web/frontend"
 }
 
 data "aws_route53_zone" "for_domain" {

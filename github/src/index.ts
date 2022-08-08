@@ -1,7 +1,7 @@
 import fetch from 'node-fetch';
 import { Probot, Context } from "probot";
 
-const hasCommand = (commentBody: string) => !/^!hanks\b/m.test(commentBody);
+const hasCommand = (commentBody: string) => /^!hanks\b/m.test(commentBody);
 
 const getTomUrl = async () => {
   const response = await fetch('https://api.thaas.io/api/v1/integrations/github');
@@ -32,9 +32,19 @@ export = (app: Probot) => {
     'commit_comment',
     'pull_request_review_comment'
   ], async (context) => {
-    app.log.info(context);
-
-    if (!hasCommand(context.payload.comment.body)) return;
+    /**
+     * Don't continue if:
+     *  - event was not a comment creation (i.e. editing or deleting)
+     *  - comment does not contain the '!hanks' command
+     *  - comment was from a bot
+     */
+    if (
+      context.payload.action !== 'created' ||
+      !hasCommand(context.payload.comment.body) ||
+      context.isBot
+    ) {
+      return;
+    }
 
     await createComment(context);
   });

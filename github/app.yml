@@ -18,7 +18,7 @@ default_events:
 
 # The set of permissions needed by the GitHub App.
 default_permissions:
-  # Search repositories, list collaborators, and access repository metadata.
+  # Search repositories, list collaborators, and access repository metadata (required).
   # https://developer.github.com/v3/apps/permissions/#metadata-permissions
   metadata: read
 
@@ -35,7 +35,7 @@ default_permissions:
   pull_requests: write
 
 # The name of the GitHub App. Defaults to the name specified in package.json
-name: THaaS
+name: tom-hanks-as-a-service
 
 # The homepage of your GitHub App.
 url: https://thaas.io

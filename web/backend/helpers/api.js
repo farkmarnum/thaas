@@ -34,7 +34,7 @@ router.get('/integrations/slack/install', async (req, res) => {
   await handleSlackInstall(req, res);
 });
 
-router.post('/integrations/github', async (_req, res) => {
+router.get('/integrations/github', async (_req, res) => {
   const imageUrl = await getTom();
   res.json({ imageUrl });
 });

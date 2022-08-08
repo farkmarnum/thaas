@@ -1,7 +1,7 @@
 data "aws_caller_identity" "current" {}
 
 locals {
-  source_dir = "${path.module}/../web/backend"
+  source_dir = "${path.module}/../../web/backend"
   s3_bucket_name = "${var.name}-storage"
   aws_account_id = data.aws_caller_identity.current.account_id
   ssm_prefix = "/${var.name}"

@@ -1,9 +1,6 @@
 const { InstallProvider, LogLevel } = require('@slack/oauth');
-
 const ParameterStore = require('./parameterStore');
-const { listObjects } = require('./s3');
-
-const { IMAGES_DOMAIN } = process.env;
+const { getTom } = require('./tom');
 
 const handleCommand = async ({ command }) => {
   if (command !== '/hanks') {
@@ -13,11 +10,7 @@ const handleCommand = async ({ command }) => {
     };
   }
 
-  const objects = await listObjects();
-  const index = Math.floor(objects.length * Math.random());
-  const objectName = objects[index];
-
-  const imageUrl = `${IMAGES_DOMAIN}/${objectName}`;
+  const imageUrl = await getTom();
 
   return {
     response_type: 'in_channel',

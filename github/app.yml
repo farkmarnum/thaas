@@ -12,9 +12,10 @@
 
 # The list of events the GitHub App subscribes to.
 default_events:
-  - commit_comment
   - issue_comment
+  - commit_comment
   - pull_request_review_comment
+  - pull_request_review
 
 # The set of permissions needed by the GitHub App.
 default_permissions:

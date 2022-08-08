@@ -1,6 +1,11 @@
 import fetch from 'node-fetch';
 import { Probot, Context } from "probot";
-import { EmitterWebhookEvent as WebhookEvent } from "@octokit/webhooks";
+import {
+  PullRequestReviewSubmittedEvent,
+  IssueCommentCreatedEvent,
+  CommitCommentCreatedEvent,
+  PullRequestReviewCommentCreatedEvent,
+} from "@octokit/webhooks-types/schema";
 
 const hasCommand = (commentBody: string | null | undefined) => commentBody && /^!hanks\b/m.test(commentBody);
 
@@ -12,8 +17,8 @@ const COMMIT_COMMENT_CREATED = 'commit_comment.created';
 const PR_DIFF_COMMENT_CREATED = 'pull_request_review_comment.created';
 const PR_REVIEW_CREATED = 'pull_request_review.submitted';
 
-type CommentEvents = typeof ISSUE_COMMENT_CREATED | typeof COMMIT_COMMENT_CREATED | typeof PR_DIFF_COMMENT_CREATED
-type ReviewEvents = typeof PR_REVIEW_CREATED;
+type CommentPayload = IssueCommentCreatedEvent | CommitCommentCreatedEvent | PullRequestReviewCommentCreatedEvent;
+type ReviewPayload = PullRequestReviewSubmittedEvent;
 
 /* Generate tom image URL: */
 const getTomUrl = async () => {
@@ -30,10 +35,10 @@ const getTomUrl = async () => {
 }
 
 const getOriginalCommentUrl = (context: Context): string => {
-  const commentPayload = context.payload as unknown as WebhookEvent<CommentEvents>['payload'];
+  const commentPayload = context.payload as CommentPayload;
   if (commentPayload.comment) return commentPayload.comment.html_url;
   
-  const reviewPayload = context.payload as unknown as WebhookEvent<ReviewEvents>['payload'];
+  const reviewPayload = context.payload as ReviewPayload;
   return reviewPayload.review.html_url;
 }
 
@@ -55,10 +60,10 @@ const getCommentBody = async (context: any): Promise<string> => {
 const isValid = (context: Context) => {
   if (context.isBot) return false;
 
-  const commentPayload = context.payload as unknown as WebhookEvent<CommentEvents>['payload'];
+  const commentPayload = context.payload as CommentPayload;
   if (commentPayload.comment) return hasCommand(commentPayload.comment.body);
 
-  const reviewPayload = context.payload as unknown as WebhookEvent<ReviewEvents>['payload'];
+  const reviewPayload = context.payload as ReviewPayload;
   return hasCommand(reviewPayload.review.body);
 };
 
@@ -102,32 +107,24 @@ const createCommitComment = async (context: Context<typeof COMMIT_COMMENT_CREATE
 /* Main: */
 export = (app: Probot) => {
   app.on(ISSUE_COMMENT_CREATED, async (context) => {
-    console.log('ISSUE_COMMENT_CREATED START'); app.log.info(context.payload); console.log('ISSUE_COMMENT_CREATED END'); // TODO: REMOVE
-
     if (!isValid(context)) return;
 
     await createIssueComment(context);
   });
 
   app.on(PR_DIFF_COMMENT_CREATED, async (context) => {
-    console.log('PR_DIFF_COMMENT_CREATED START'); app.log.info(context.payload); console.log('PR_DIFF_COMMENT_CREATED END'); // TODO: REMOVE
-
     if (!isValid(context)) return;
 
     await createPrDiffComment(context);
   });
 
   app.on(COMMIT_COMMENT_CREATED, async (context) => {
-    console.log('COMMIT_COMMENT_CREATED START'); app.log.info(context.payload); console.log('COMMIT_COMMENT_CREATED END'); // TODO: REMOVE
-
     if (!isValid(context)) return;
 
     await createCommitComment(context);
   });
 
   app.on(PR_REVIEW_CREATED, async (context) => {
-    console.log('PR_REVIEW_CREATED START'); app.log.info(context.payload); console.log('PR_REVIEW_CREATED END'); // TODO: REMOVE
-
     if (!isValid(context)) return;
 
     // Note: we use the same API call as we do when replying to a regular issue comment, since reviews show up as an issue comment:

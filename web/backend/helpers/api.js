@@ -35,8 +35,10 @@ router.get('/integrations/slack/install', async (req, res) => {
 });
 
 router.get('/integrations/github', async (_req, res) => {
-  const imageUrl = await getTom();
-  res.json({ imageUrl });
+  const urlWithPath = await getTom();
+  const fullUrl = `https://${urlWithPath}`;
+
+  res.json({ imageUrl: fullUrl });
 });
 
 module.exports = router;

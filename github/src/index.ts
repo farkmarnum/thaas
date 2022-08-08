@@ -47,7 +47,7 @@ const getCommentBody = async (context: any): Promise<string> => {
   const imageUrl = await getTomUrl();
   const originalCommentUrl = getOriginalCommentUrl(context);
 
-  const body = `![tom hanks](${imageUrl})\n\n<sup>I am a [bot](${HOMEPAGE})</sup>, responding to a [comment](${originalCommentUrl}).`;
+  const body = `![tom hanks](${imageUrl})\n\n<sup>I am a [bot](${HOMEPAGE}), responding to a [comment](${originalCommentUrl}).</sup>`;
 
   return body;
 }

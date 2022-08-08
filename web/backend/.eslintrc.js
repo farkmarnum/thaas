@@ -13,5 +13,12 @@ module.exports = {
     'max-len': 'off',
     'comma-dangle': 'off',
     'function-paren-newline': 'off',
+
+    'no-console': ['error', { allow: ['info', 'warn', 'error'] }],
+
+    'import/no-extraneous-dependencies': [
+      'error',
+      { devDependencies: ['**/dev.js'] },
+    ],
   },
 };

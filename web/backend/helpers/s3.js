@@ -10,6 +10,7 @@ const listObjects = () =>
   new Promise((resolve, reject) => {
     s3.listObjects({ Bucket }, (err, data) => {
       if (err) {
+        console.error(err);
         reject(err);
       } else {
         resolve(data.Contents.map(({ Key }) => Key));
@@ -17,15 +18,14 @@ const listObjects = () =>
     });
   });
 
-const getObject = (key) =>
-  new Promise((resolve, reject) => {
-    s3.getObject({ Bucket, Key: key }, (err, data) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(data.Body);
-      }
-    });
-  });
+const streamObject = (key, res) => {
+  s3.getObject({ Bucket, Key: key })
+    .on('httpHeaders', (_statusCode, headers, response) => {
+      res.set('Content-Length', headers['content-length']);
+      res.set('Content-Type', headers['content-type']);
+      response.httpResponse.createUnbufferedStream().pipe(res);
+    })
+    .send();
+};
 
-module.exports = { listObjects, getObject };
+module.exports = { listObjects, streamObject };

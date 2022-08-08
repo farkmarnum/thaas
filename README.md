@@ -23,9 +23,7 @@ Then, use the command in a PR comment:
 
 ### Slack
 
-First, install the Slack app for your organization.
-
-<!-- TODO: add instructions -->
+First, [install](https://api.thaas.io/api/v1/integrations/slack/install) the Slack app for your organization.
 
 Then, use the command in a post:
 ```
@@ -38,7 +36,7 @@ Then, use the command in a post:
 Want to build your own Tom Hanks solution? You can access the API at https://api.thaas.io.
 
 ```
-curl -s https://api.thaas.io/api/v1/tom?params=here > tom.png
+curl -s https://api.thaas.io/api/v1/tom > tom.png
 ```
 
 This API is also the backend for all other platform integrations.

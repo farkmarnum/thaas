@@ -2,7 +2,7 @@ const url = require('url');
 
 const router = require('express').Router();
 
-const { listObjects, getObject } = require('./s3');
+const { listObjects, streamObject } = require('./s3');
 const {
   handleCommand,
   handleSlackOAuth,
@@ -12,15 +12,13 @@ const {
 router.get('/tom', async (_req, res) => {
   const objects = await listObjects();
   const index = Math.floor(objects.length * Math.random());
-  const object = objects[index];
-  const imageData = await getObject(object);
+  const key = objects[index];
 
-  res.sendFile(imageData);
+  await streamObject(key, res);
 });
 
 router.post('/integrations/slack', async (req, res) => {
   const paramString = Buffer.from(req.body, 'base64').toString('ascii');
-  console.log(paramString);
   const paramsParsed = url.parse(`example.com/?${paramString}`, true).query;
   const bodyParams = { ...paramsParsed };
 
@@ -28,12 +26,10 @@ router.post('/integrations/slack', async (req, res) => {
 });
 
 router.get('/integrations/slack/oauth', async (req, res) => {
-  console.log(req.query, req.body);
   await handleSlackOAuth(req, res);
 });
 
 router.get('/integrations/slack/install', async (req, res) => {
-  console.log(req.query, req.body);
   await handleSlackInstall(req, res);
 });
 

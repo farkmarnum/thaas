@@ -74,6 +74,9 @@ module "lambda_function" {
 
   publish = true
 
+  # Limit the concurrency to prevent an accidental recursion bug from emptying my bank account:
+  reserved_concurrent_executions = 20
+
   environment_variables = {
     S3_BUCKET_NAME      = module.s3_bucket.s3_bucket_id
     IMAGES_DOMAIN       = var.images_domain

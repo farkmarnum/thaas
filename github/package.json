@@ -9,5 +9,8 @@
   },
   "license": "MIT",
   "private": true,
-  "devDependencies": {}
+  "devDependencies": {},
+  "dependencies": {
+    "probot": "^12.2.5"
+  }
 }

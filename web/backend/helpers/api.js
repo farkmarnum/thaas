@@ -8,6 +8,7 @@ const {
   handleSlackOAuth,
   handleSlackInstall,
 } = require('./slack');
+const { getTom } = require('./tom');
 
 router.get('/tom', async (_req, res) => {
   const objects = await listObjects();
@@ -34,7 +35,8 @@ router.get('/integrations/slack/install', async (req, res) => {
 });
 
 router.post('/integrations/github', async (_req, res) => {
-  res.json({ message: 'TODO: GitHub integration' });
+  const imageUrl = await getTom();
+  res.json({ imageUrl });
 });
 
 module.exports = router;

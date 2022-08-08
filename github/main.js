@@ -1,17 +1,22 @@
+const API_URL = 'https://api.thaas.io/api/v1/integrations/github';
+
 const commentTriggers = ["issue_comment", "pull_request_review_comment", "commit_comment"];
 
-const commentHandler = async (context) => {
-  app.log.info(context);
+const commentHandler = (app) =>
+  async (context) => {
+    app.log.info(context);
 
-  const imageUrl = 'TODO';
+    const response = await fetch(API_URL);
 
-  const body = `![tom hanks](${imageUrl})`;
+    const { imageUrl } = await response.json();
 
-  return context.octokit.issues.createComment(
-    context.issue({ body })
-  );
-};
+    const body = `![tom hanks](${imageUrl})`;
+
+    return context.octokit.issues.createComment(
+      context.issue({ body })
+    );
+  };
 
 module.exports = (app) => {
-  app.on(commentTriggers, commentHandler);;
+  app.on(commentTriggers, commentHandler(app));
 };

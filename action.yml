@@ -1,7 +1,0 @@
-name: 'THAAS'
-description: 'Tom Hanks As A Service'
-author: 'Mark Farnum'
-# TODO: add inputs
-runs:
-  using: 'node16'
-  main: 'action/dist/index.js'

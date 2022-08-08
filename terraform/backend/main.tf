@@ -61,7 +61,7 @@ module "cloudfront" {
 }
 
 ###
-### 
+### LAMBDA 
 ###
 module "lambda_function" {
   source = "terraform-aws-modules/lambda/aws"
@@ -216,24 +216,26 @@ resource "aws_sns_topic_subscription" "topic_email_subscription" {
   endpoint  = var.alarm_email
 }
 locals {
-  lambda_invocations_threshold = 10
+  lambda_invocations_threshold = 30
   lambda_invocations_period_seconds = 60
+  evaluation_periods = 3
 }
 module "metric_alarms" {
   source  = "terraform-aws-modules/cloudwatch/aws//modules/metric-alarm"
   version = "~> 3.0"
 
   alarm_name          = "lambda-invocations-${var.name}"
-  alarm_description   = "Too many lambda invocations (more than ${local.lambda_invocations_threshold} times in ${local.lambda_invocations_period_seconds} seconds)."
+  alarm_description   = "Too many lambda invocations (more than ${local.lambda_invocations_threshold} times per ${local.lambda_invocations_period_seconds} second period, for ${local.datapoints_to_alarm} periods)."
   comparison_operator = "GreaterThanThreshold"
-  evaluation_periods  = 1
+  datapoints_to_alarm = local.evaluation_periods
+  evaluation_periods  = local.evaluation_periods
   threshold           = local.lambda_invocations_threshold
   period              = local.lambda_invocations_period_seconds
   unit                = "Count"
 
   namespace   = "AWS/Lambda"
   metric_name = "Invocations"
-  statistic   = "Maximum"
+  statistic   = "Sum"
 
   dimensions = {
     FunctionName = module.lambda_function.lambda_function_name

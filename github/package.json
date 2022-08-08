@@ -14,7 +14,7 @@
   "private": true,
   "scripts": {
     "build": "tsc",
-    "start": "yarn build && probot run ./lib/index.js"
+    "start": "yarn build && probot run ./dist/index.js"
   },
   "devDependencies": {
     "@types/node": "^18.6.4",
@@ -24,6 +24,7 @@
     "typescript": "^4.7.4"
   },
   "dependencies": {
+    "@probot/adapter-aws-lambda-serverless": "^3.0.1",
     "node-fetch": "2",
     "probot": "^12.2.5"
   }

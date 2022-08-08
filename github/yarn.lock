@@ -249,6 +249,16 @@
     "@octokit/webhooks-types" "5.8.0"
     aggregate-error "^3.1.0"
 
+"@probot/adapter-aws-lambda-serverless@^3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@probot/adapter-aws-lambda-serverless/-/adapter-aws-lambda-serverless-3.0.1.tgz#c542b9fdf528fb7f8ec2907464f3ff969c869f15"
+  integrity sha512-NTWKJcDUiziZxUxnddSFsp/BaKz93PWqHHQWACHDt2qvsczuqwId9RSsCvY7AJ1s3czGsk0tbaSaYHl1Kb0uYA==
+  dependencies:
+    "@probot/get-private-key" "^1.1.0"
+    "@types/aws-lambda" "^8.10.85"
+    lowercase-keys "^2.0.0"
+    probot "^12.1.1"
+
 "@probot/get-private-key@^1.1.0":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@probot/get-private-key/-/get-private-key-1.1.1.tgz#12bf61d00a15760d9b0bd713a794f9c4ba4ad5d3"
@@ -331,6 +341,11 @@
   dependencies:
     "@sentry/types" "6.19.7"
     tslib "^1.9.3"
+
+"@types/aws-lambda@^8.10.85":
+  version "8.10.101"
+  resolved "https://registry.yarnpkg.com/@types/aws-lambda/-/aws-lambda-8.10.101.tgz#35d85783a834e04604d49e85dc7ee6e2820e8939"
+  integrity sha512-84geGyVc0H9P9aGbcg/vkDh5akJq0bEf3tizHNR2d1gcm0wsp9IZ/SW6rPxvgjJFi3OeVxDc8WTKCAjoZbogzg==
 
 "@types/body-parser@*":
   version "1.19.2"
@@ -1258,6 +1273,11 @@ lodash@^4.17.21:
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
 
+lowercase-keys@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/lowercase-keys/-/lowercase-keys-2.0.0.tgz#2603e78b7b4b0006cbca2fbcc8a3202558ac9479"
+  integrity sha512-tqNXrS78oMOE73NMxK4EMLQsQowWf8jKooH9g7xPavRT706R6bkQJ6DY2Te7QukaZsulxa30wQ7bk0pm4XiHmA==
+
 lru-cache@^6.0.0:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-6.0.0.tgz#6d6fe6570ebd96aaf90fcad1dafa3b2566db3a94"
@@ -1533,7 +1553,7 @@ pkg-conf@^3.1.0:
     find-up "^3.0.0"
     load-json-file "^5.2.0"
 
-probot@^12.2.5:
+probot@^12.1.1, probot@^12.2.5:
   version "12.2.5"
   resolved "https://registry.yarnpkg.com/probot/-/probot-12.2.5.tgz#acc3260daa5ba279f7f0e822fcb0ab695f7d0e25"
   integrity sha512-+cK8tsnPsMF8WqI4CibTeqw5T6wpsQIFXJzGex/IrxqA0grULrd8BC56R/0ZiJYBml7E94gC/nV5IFUd9Zsn6Q==

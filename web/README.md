@@ -2,9 +2,8 @@
 
 API & frontend site, deployed on Serverless
 
-## API
+## Backend API
 Node on Lambda -> API Gateway -> Route53
-
 
 ## Frontend
 HTML -> S3 -> CloudFront -> Route53

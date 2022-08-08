@@ -17,6 +17,7 @@ Then, use the command in a PR comment:
 !hanks
 ```
 
+Note: the comment must contain a line that begins with the command, and it cannot be immediately followed by word characters. So, `test!hanks` or `!hankstest` would not be recognized as a command.
 
 ### Slack
 

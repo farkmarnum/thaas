@@ -40,5 +40,7 @@ module "backend" {
   SLACK_CLIENT_SECRET = var.SLACK_CLIENT_SECRET
   SLACK_STATE_SECRET  = var.SLACK_STATE_SECRET
 
+  alarm_email = var.alarm_email
+
   tags = var.tags
 }

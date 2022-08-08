@@ -21,6 +21,11 @@ variable "SLACK_STATE_SECRET" {
   sensitive = true
 }
 
+variable "alarm_email" {
+  type      = string
+  sensitive = true
+}
+
 variable "tags" {
   type = map(string)
 

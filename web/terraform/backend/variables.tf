@@ -30,6 +30,10 @@ variable "SLACK_STATE_SECRET" {
   type = string
 }
 
+variable "alarm_email" {
+  type = string
+}
+
 variable "tags" {
   type = map(string)
 }

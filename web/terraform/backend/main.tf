@@ -186,3 +186,58 @@ resource "aws_route53_record" "subdomain" {
     evaluate_target_health = false
   }
 }
+
+###
+### CloudWatch Alarm
+###
+resource "aws_sns_topic" "lambda_invocations_alarm" {
+  name            = "lambda-invocations-${var.name}"
+  delivery_policy = jsonencode({
+    "http" : {
+      "defaultHealthyRetryPolicy" : {
+        "minDelayTarget" : 20,
+        "maxDelayTarget" : 20,
+        "numRetries" : 3,
+        "numMaxDelayRetries" : 0,
+        "numNoDelayRetries" : 0,
+        "numMinDelayRetries" : 0,
+        "backoffFunction" : "linear"
+      },
+      "disableSubscriptionOverrides" : false,
+      "defaultThrottlePolicy" : {
+        "maxReceivesPerSecond" : 1
+      }
+    }
+  })
+}
+resource "aws_sns_topic_subscription" "topic_email_subscription" {
+  topic_arn = aws_sns_topic.lambda_invocations_alarm.arn
+  protocol  = "email"
+  endpoint  = var.alarm_email
+}
+locals {
+  lambda_invocations_threshold = 10
+  lambda_invocations_period_seconds = 60
+}
+module "metric_alarms" {
+  source  = "terraform-aws-modules/cloudwatch/aws//modules/metric-alarm"
+  version = "~> 3.0"
+
+  alarm_name          = "lambda-invocations-${var.name}"
+  alarm_description   = "Too many lambda invocations (more than ${local.lambda_invocations_threshold} times in ${local.lambda_invocations_period_seconds} seconds)."
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = 1
+  threshold           = local.lambda_invocations_threshold
+  period              = local.lambda_invocations_period_seconds
+  unit                = "Count"
+
+  namespace   = "AWS/Lambda"
+  metric_name = "Invocations"
+  statistic   = "Maximum"
+
+  dimensions = {
+    FunctionName = module.lambda_function.lambda_function_name
+  }
+
+  alarm_actions = [resource.aws_sns_topic.lambda_invocations_alarm.arn]
+}

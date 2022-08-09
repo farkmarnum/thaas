@@ -35,6 +35,9 @@ jobs:
           TF_VAR_SLACK_CLIENT_SECRET: ${{ secrets.SLACK_CLIENT_SECRET }}
           TF_VAR_SLACK_STATE_SECRET: ${{ secrets.SLACK_STATE_SECRET }}
           TF_VAR_alarm_email: ${{ secrets.ALARM_EMAIL }}
+          TF_VAR_GH_APP_APP_ID: ${{ secrets.GH_APP_APP_ID }}
+          TF_VAR_GH_APP_PRIVATE_KEY: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          TF_VAR_GH_APP_WEBHOOK_SECRET: ${{ secrets.GH_APP_WEBHOOK_SECRET }}
         run: |
           terraform init
           terraform validate -no-color

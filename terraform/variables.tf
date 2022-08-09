@@ -27,15 +27,18 @@ variable "alarm_email" {
 }
 
 variable "GH_APP_APP_ID" {
-  type = string
+  type      = string
+  sensitive = true
 }
 
 variable "GH_APP_PRIVATE_KEY" {
-  type = string
+  type      = string
+  sensitive = true
 }
 
 variable "GH_APP_WEBHOOK_SECRET" {
-  type = string
+  type      = string
+  sensitive = true
 }
 
 variable "tags" {

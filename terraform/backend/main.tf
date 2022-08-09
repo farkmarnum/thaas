@@ -232,7 +232,7 @@ module "metric_alarms" {
   version = "~> 3.0"
 
   alarm_name          = "lambda-invocations-${var.name}"
-  alarm_description   = "Too many lambda invocations (more than ${local.lambda_invocations_threshold} times per ${local.lambda_invocations_period_seconds} second period, for ${local.datapoints_to_alarm} periods)."
+  alarm_description   = "Too many lambda invocations (more than ${local.lambda_invocations_threshold} times per ${local.lambda_invocations_period_seconds} second period, for ${local.evaluation_periods} periods)."
   comparison_operator = "GreaterThanThreshold"
   datapoints_to_alarm = local.evaluation_periods
   evaluation_periods  = local.evaluation_periods

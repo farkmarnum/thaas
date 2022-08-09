@@ -31,7 +31,7 @@ const handleGitHub = async ({ req, res }) => {
       signature:
         headersLowerCase['x-hub-signature-256'] ||
         headersLowerCase['x-hub-signature'],
-      payload: Buffer.from(req.body, 'base64').toString('utf-8');
+      payload: Buffer.from(req.body, 'base64').toString('utf-8'),
     });
 
     res.json({ ok: true });

@@ -10,7 +10,10 @@ const handleGitHub = async ({ req, res }) => {
   try {
     const probot = new Probot({
       appId: process.env.GH_APP_APP_ID,
-      privateKey: process.envBuffer.GH_APP_PRIVATE_KEY,
+      privateKey: Buffer.from(
+        process.env.GH_APP_PRIVATE_KEY,
+        'base64',
+      ).toString('utf-8'),
       secret: process.env.GH_APP_WEBHOOK_SECRET,
     });
 

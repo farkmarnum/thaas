@@ -1,4 +1,5 @@
 const { Probot } = require('probot');
+const { getCurrentInvoke } = require('@vendia/serverless-express');
 const probotApp = require('./probotApp');
 
 const lowercaseKeys = (obj) =>
@@ -6,8 +7,11 @@ const lowercaseKeys = (obj) =>
     Object.entries(obj).map(([key, value]) => [key.toLowerCase(), value]),
   );
 
-const handleGitHub = async ({ req, res }) => {
+const handleGitHub = async ({ res }) => {
   try {
+    // Access Lambda event directly, since that's what Protobot needs:
+    const { event } = getCurrentInvoke();
+
     const probot = new Probot({
       appId: process.env.GH_APP_APP_ID,
       privateKey: Buffer.from(
@@ -19,7 +23,7 @@ const handleGitHub = async ({ req, res }) => {
 
     await probot.load(probotApp);
 
-    const headersLowerCase = lowercaseKeys(req.headers);
+    const headersLowerCase = lowercaseKeys(event.headers);
 
     await probot.webhooks.verifyAndReceive({
       id: headersLowerCase['x-github-delivery'],
@@ -27,7 +31,7 @@ const handleGitHub = async ({ req, res }) => {
       signature:
         headersLowerCase['x-hub-signature-256'] ||
         headersLowerCase['x-hub-signature'],
-      payload: req.body,
+      payload: event.body,
     });
 
     res.json({ ok: true });

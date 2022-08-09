@@ -12,31 +12,33 @@ const handleGitHub = async ({ req, res }) => {
     // Access Lambda event directly, since that's what Protobot needs:
     const { event } = getCurrentInvoke();
 
-    const probot = new Probot({
+    const config = {
       appId: process.env.GH_APP_APP_ID,
       privateKey: Buffer.from(
         process.env.GH_APP_PRIVATE_KEY,
         'base64',
       ).toString('utf-8'),
       secret: process.env.GH_APP_WEBHOOK_SECRET,
-    });
+    };
+
+    console.log('config:', config);
+    const probot = new Probot();
 
     await probot.load(probotApp);
 
     const headersLowerCase = lowercaseKeys(event.headers);
 
-    console.log('req.body.toString():', req.body.toString());
-    console.log('typeof event:', typeof event);
-    console.log('event:', event);
-
-    await probot.webhooks.verifyAndReceive({
+    const data = {
       id: headersLowerCase['x-github-delivery'],
       name: headersLowerCase['x-github-event'],
       signature:
         headersLowerCase['x-hub-signature-256'] ||
         headersLowerCase['x-hub-signature'],
-      payload: event.payload,
-    });
+      payload: req.body.toString(),
+    };
+    console.log('data:', data);
+
+    await probot.webhooks.verifyAndReceive(data);
 
     res.json({ ok: true });
   } catch (err) {

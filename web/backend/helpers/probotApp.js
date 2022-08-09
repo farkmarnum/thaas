@@ -23,9 +23,10 @@ const getCommentBody = async (context) => {
 const isValid = (context) => {
   if (context.isBot) return false;
 
-  return hasCommand(
-    context.payload.comment.body || context.payload.review.body,
-  );
+  const { comment, review } = context.payload;
+  const { body } = comment || review || {};
+
+  return hasCommand(body);
 };
 
 const createIssueComment = async (context) => {

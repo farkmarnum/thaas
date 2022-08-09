@@ -22,7 +22,7 @@ const handleGitHub = async ({ req, res }) => {
     };
 
     console.log('config:', config);
-    const probot = new Probot();
+    const probot = new Probot(config);
 
     await probot.load(probotApp);
 

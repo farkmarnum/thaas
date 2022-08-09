@@ -39,6 +39,8 @@ const handleGitHub = async ({ req, res }) => {
 
     res.json({ ok: true });
   } catch (err) {
+    console.error(err);
+
     res.status(404).json({
       error: 'Could not verify message was from GitHub',
     });

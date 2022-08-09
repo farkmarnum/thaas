@@ -21,13 +21,14 @@
   },
   "scripts": {
     "start": "nodemon dev.js",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "start-gh": "probot run ./helpers/probotApp.js"
   },
   "dependencies": {
     "@slack/oauth": "^2.5.4",
     "@vendia/serverless-express": "^4.10.1",
     "aws-sdk": "^2.1185.0",
     "express": "^4.18.1",
-    "lowercase-keys": "^3.0.0"
+    "probot": "^12.2.5"
   }
 }

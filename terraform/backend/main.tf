@@ -75,16 +75,23 @@ module "lambda_function" {
   publish = true
 
   # Limit the concurrency to prevent an accidental recursion bug from emptying my bank account:
-  reserved_concurrent_executions = 20
+  reserved_concurrent_executions = 10
 
   environment_variables = {
-    S3_BUCKET_NAME      = module.s3_bucket.s3_bucket_id
-    IMAGES_DOMAIN       = var.images_domain
-    BACKEND_DOMAIN      = var.domain
-    SLACK_CLIENT_ID     = var.SLACK_CLIENT_ID
-    SLACK_CLIENT_SECRET = var.SLACK_CLIENT_SECRET
-    SLACK_STATE_SECRET  = var.SLACK_STATE_SECRET
-    SSM_PREFIX          = local.ssm_prefix
+    S3_BUCKET_NAME        = module.s3_bucket.s3_bucket_id
+
+    IMAGES_DOMAIN         = var.images_domain
+    BACKEND_DOMAIN        = var.domain
+
+    SLACK_CLIENT_ID       = var.SLACK_CLIENT_ID
+    SLACK_CLIENT_SECRET   = var.SLACK_CLIENT_SECRET
+    SLACK_STATE_SECRET    = var.SLACK_STATE_SECRET
+
+    SSM_PREFIX            = local.ssm_prefix
+
+    GH_APP_APP_ID         = var.GH_APP_APP_ID
+    GH_APP_PRIVATE_KEY    = var.GH_APP_PRIVATE_KEY
+    GH_APP_WEBHOOK_SECRET = var.GH_APP_WEBHOOK_SECRET
   }
 
   # Allow Lambda to access S3 and SSM Parameter Store:

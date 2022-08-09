@@ -26,6 +26,18 @@ variable "alarm_email" {
   sensitive = true
 }
 
+variable "GH_APP_APP_ID" {
+  type = string
+}
+
+variable "GH_APP_PRIVATE_KEY" {
+  type = string
+}
+
+variable "GH_APP_WEBHOOK_SECRET" {
+  type = string
+}
+
 variable "tags" {
   type = map(string)
 

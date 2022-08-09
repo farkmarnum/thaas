@@ -36,11 +36,13 @@ module "backend" {
   hosted_zone_name            = "${var.domain}."
   acm_request_certificate_arn = module.acm_request_certificate.arn
 
-  SLACK_CLIENT_ID     = var.SLACK_CLIENT_ID
-  SLACK_CLIENT_SECRET = var.SLACK_CLIENT_SECRET
-  SLACK_STATE_SECRET  = var.SLACK_STATE_SECRET
-
-  alarm_email = var.alarm_email
+  SLACK_CLIENT_ID       = var.SLACK_CLIENT_ID
+  SLACK_CLIENT_SECRET   = var.SLACK_CLIENT_SECRET
+  SLACK_STATE_SECRET    = var.SLACK_STATE_SECRET
+  alarm_email           = var.alarm_email
+  GH_APP_APP_ID         = var.GH_APP_APP_ID
+  GH_APP_PRIVATE_KEY    = var.GH_APP_PRIVATE_KEY
+  GH_APP_WEBHOOK_SECRET = var.GH_APP_WEBHOOK_SECRET
 
   tags = var.tags
 }

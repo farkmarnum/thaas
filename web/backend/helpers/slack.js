@@ -1,6 +1,6 @@
 const { InstallProvider, LogLevel } = require('@slack/oauth');
 const ParameterStore = require('./parameterStore');
-const { getTom } = require('./tom');
+const getTom = require('./getTom');
 
 const handleCommand = async ({ command }) => {
   if (command !== '/hanks') {

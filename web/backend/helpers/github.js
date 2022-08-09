@@ -1,8 +1,22 @@
-const lowercaseKeys = require('lowercase-keys');
+const { Probot } = require('probot');
+const probotApp = require('./probotApp');
 
-const lambdaFunction = async (probot, event) => {
+const lowercaseKeys = (obj) =>
+  Object.fromEntries(
+    Object.entries(obj).map(([key, value]) => [key.toLowerCase(), value]),
+  );
+
+const handleGitHub = async ({ req, res }) => {
   try {
-    const headersLowerCase = lowercaseKeys(event.headers);
+    const probot = new Probot({
+      appId: process.env.GH_APP_APP_ID,
+      privateKey: process.envBuffer.GH_APP_PRIVATE_KEY,
+      secret: process.env.GH_APP_WEBHOOK_SECRET,
+    });
+
+    await probot.load(probotApp);
+
+    const headersLowerCase = lowercaseKeys(req.headers);
 
     await probot.webhooks.verifyAndReceive({
       id: headersLowerCase['x-github-delivery'],
@@ -10,19 +24,15 @@ const lambdaFunction = async (probot, event) => {
       signature:
         headersLowerCase['x-hub-signature-256'] ||
         headersLowerCase['x-hub-signature'],
-      payload: event.body,
+      payload: req.body,
     });
 
-    return {
-      statusCode: 200,
-      body: 'JSON.stringify({ ok: true })',
-    };
+    res.json({ ok: true });
   } catch (err) {
-    return {
-      statusCode: 500,
+    res.status(404).json({
       error: 'Could not verify message was from GitHub',
-    };
+    });
   }
 };
 
-module.exports = { lambdaFunction };
+module.exports = { handleGitHub };

@@ -1,14 +1,12 @@
 const url = require('url');
-
 const router = require('express').Router();
-
+const { handleGitHub } = require('./github');
 const { listObjects, streamObject } = require('./s3');
 const {
   handleCommand,
   handleSlackOAuth,
   handleSlackInstall,
 } = require('./slack');
-const { getTom } = require('./tom');
 
 router.get('/tom', async (_req, res) => {
   const objects = await listObjects();
@@ -26,19 +24,16 @@ router.post('/integrations/slack', async (req, res) => {
   res.json(await handleCommand(bodyParams));
 });
 
-router.get('/integrations/slack/oauth', async (req, res) => {
-  await handleSlackOAuth(req, res);
-});
+router.get('/integrations/slack/oauth', async (req, res) =>
+  handleSlackOAuth(req, res),
+);
 
-router.get('/integrations/slack/install', async (req, res) => {
-  await handleSlackInstall(req, res);
-});
+router.get('/integrations/slack/install', async (req, res) =>
+  handleSlackInstall(req, res),
+);
 
-router.get('/integrations/github', async (_req, res) => {
-  const urlWithPath = await getTom();
-  const fullUrl = `https://${urlWithPath}`;
-
-  res.json({ imageUrl: fullUrl });
-});
+router.post('/integrations/github', async (req, res) =>
+  handleGitHub({ req, res }),
+);
 
 module.exports = router;

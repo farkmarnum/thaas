@@ -12,4 +12,4 @@ const getTom = async () => {
   return imageUrl;
 };
 
-module.exports = { getTom };
+module.exports = getTom;

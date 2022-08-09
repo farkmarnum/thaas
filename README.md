@@ -10,7 +10,7 @@ It should be possible to summon a picture of Tom Hanks on any platform just by t
 
 ### GitHub
 
-First, install the GitHub App in your repository or organization.
+First, [install](https://github.com/apps/tom-hanks-as-a-service/installations/new) the GitHub App in your repository or organization.
 
 Then, use the command in a PR comment:
 ```

@@ -17,7 +17,12 @@ Then, use the command in a PR comment:
 !hanks
 ```
 
+The THaaS bot will respond with a tom hanks pic.
+
 Note: the comment must contain a line that begins with the command, and it cannot be immediately followed by word characters. So, `test!hanks` or `!hankstest` would not be recognized as a command.
+
+Also, editing a comment to add `!hanks` will not result in a reply from the bot -- your comment must contain `!hanks` when created to trigger the bot.
+
 
 ### Slack
 
@@ -27,6 +32,8 @@ Then, use the command in a post:
 ```
 /hanks
 ```
+
+The THaaS bot will respond with a tom hanks pic.
 
 
 ### API

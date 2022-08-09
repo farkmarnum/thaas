@@ -25,8 +25,9 @@ const handleGitHub = async ({ req, res }) => {
 
     const headersLowerCase = lowercaseKeys(event.headers);
 
-    console.log('req.body:', req.body);
-    console.log('event.payload:', event.payload);
+    console.log('req.body.toString():', req.body.toString());
+    console.log('typeof event:', typeof event);
+    console.log('event:', event);
 
     await probot.webhooks.verifyAndReceive({
       id: headersLowerCase['x-github-delivery'],

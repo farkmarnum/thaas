@@ -7,7 +7,7 @@ const lowercaseKeys = (obj) =>
     Object.entries(obj).map(([key, value]) => [key.toLowerCase(), value]),
   );
 
-const handleGitHub = async ({ res }) => {
+const handleGitHub = async ({ req, res }) => {
   try {
     // Access Lambda event directly, since that's what Protobot needs:
     const { event } = getCurrentInvoke();
@@ -25,13 +25,16 @@ const handleGitHub = async ({ res }) => {
 
     const headersLowerCase = lowercaseKeys(event.headers);
 
+    console.log('req.body:', req.body);
+    console.log('event.payload:', event.payload);
+
     await probot.webhooks.verifyAndReceive({
       id: headersLowerCase['x-github-delivery'],
       name: headersLowerCase['x-github-event'],
       signature:
         headersLowerCase['x-hub-signature-256'] ||
         headersLowerCase['x-hub-signature'],
-      payload: event.body,
+      payload: event.payload,
     });
 
     res.json({ ok: true });

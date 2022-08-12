@@ -1,10 +1,11 @@
 data "aws_caller_identity" "current" {}
 
 locals {
-  source_dir = "${path.module}/../../web/backend"
+  source_dir     = "${path.module}/../../web/backend"
   s3_bucket_name = "${var.name}-storage"
   aws_account_id = data.aws_caller_identity.current.account_id
-  ssm_prefix = "/${var.name}"
+  ssm_prefix     = "/${var.name}"
+  lambda_runtime = "nodejs16.x"
 }
 
 resource "aws_cloudfront_origin_access_identity" "origin_access_identity" {
@@ -63,14 +64,41 @@ module "cloudfront" {
 ###
 ### LAMBDA 
 ###
+# Layer for just the node dependencies
+module "lambda_dependencies_layer" {
+  source = "terraform-aws-modules/lambda/aws"
+  version = "2.36.0"
+
+  create_layer = true
+
+  layer_name               = "${var.name}-dependencies-layer"
+  compatible_runtimes      = [local.lambda_runtime]
+
+  # Install node deps and just store node_modules
+  source_path   = {
+    path = local.source_dir,
+    commands = [
+      "npm install",
+      "zip: ./node_modules nodejs/node_modules"
+    ],
+  }
+}
+
 module "lambda_function" {
   source = "terraform-aws-modules/lambda/aws"
   version = "2.36.0"
 
   function_name = var.name
   handler       = "handler.handler"
-  runtime       = "nodejs16.x"
-  source_path   = local.source_dir
+  runtime       = local.lambda_runtime
+
+  # Do not install node deps (layer is used for that)
+  source_path   = {
+    path = local.source_dir,
+    npm_requirements = false # (do not run npm install)
+  }
+
+  layers = [module.lambda_dependencies_layer.lambda_layer_arn]
 
   publish = true
 
@@ -78,7 +106,7 @@ module "lambda_function" {
   reserved_concurrent_executions = 10
 
   # Longer timeout because occasionally cold start is pretty slow
-  timeout = 6
+  timeout = 5
 
   environment_variables = {
     S3_BUCKET_NAME        = module.s3_bucket.s3_bucket_id

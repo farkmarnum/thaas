@@ -7,13 +7,13 @@ const hasCommand = (commentBody) =>
 const HOMEPAGE = 'https://thaas.io';
 
 const getOriginalCommentUrl = (context) =>
-  context.payload.comment.html_url || context.payload.review.html_url;
+  (context.payload.comment || context.payload.review || {}).html_url;
 
 const getCommentBody = async (context) => {
   const imageUrl = await getTom();
   const fullImageUrl = `https://${imageUrl}`;
 
-  const originalCommentUrl = getOriginalCommentUrl(context);
+  const originalCommentUrl = getOriginalCommentUrl(context) || '#';
 
   const body = `![tom hanks](${fullImageUrl})\n\n<sup>I am a [bot](${HOMEPAGE}), responding to a [comment](${originalCommentUrl}).</sup>`;
 

@@ -79,8 +79,9 @@ module "lambda_dependencies_layer" {
     path = local.source_dir,
     commands = [
       "npm install",
-      ":zip ./node_modules nodejs/node_modules"
+      ":zip . nodejs"
     ],
+    patterns = ["node_modules/.+"],
   }
 }
 
@@ -95,7 +96,8 @@ module "lambda_function" {
   # Do not install node deps (layer is used for that)
   source_path   = {
     path = local.source_dir,
-    npm_requirements = false # (do not run npm install)
+    npm_requirements = false
+    patterns = ["!node_modules/.+"],
   }
 
   layers = [module.lambda_dependencies_layer.lambda_layer_arn]

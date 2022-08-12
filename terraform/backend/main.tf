@@ -79,7 +79,7 @@ module "lambda_dependencies_layer" {
     path = local.source_dir,
     commands = [
       "npm install",
-      "zip: ./node_modules nodejs/node_modules"
+      ":zip ./node_modules nodejs/node_modules"
     ],
   }
 }

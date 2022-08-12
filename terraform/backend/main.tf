@@ -195,13 +195,10 @@ module "api_gateway" {
       payload_format_version = "2.0"
       timeout_milliseconds   = 5000
     }
-
-    "$default" = {
-      lambda_arn = module.lambda_function.lambda_function_arn
-    }
   }
 
   create_vpc_link = false
+  create_default_stage_api_mapping = false
 
   tags = var.tags
 }

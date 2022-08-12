@@ -191,7 +191,7 @@ module "api_gateway" {
   domain_name_certificate_arn = var.acm_request_certificate_arn
 
   integrations = {
-    "ANY /{path+}" = {
+    "$default" = {
       lambda_arn             = module.lambda_function.lambda_function_arn
       payload_format_version = "2.0"
       timeout_milliseconds   = 5000
@@ -199,7 +199,6 @@ module "api_gateway" {
   }
 
   create_vpc_link = false
-  create_default_stage_api_mapping = false
 
   tags = var.tags
 }

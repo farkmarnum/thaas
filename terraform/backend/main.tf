@@ -78,10 +78,10 @@ module "lambda_dependencies_layer" {
   source_path   = {
     path = local.source_dir,
     commands = [
-      "npm install",
-      ":zip . nodejs"
+      "yarn install --production",
+      "mkdir zip_tmp && mv node_modules zip_tmp && cd zip_tmp && mkdir nodejs && mv node_modules nodejs",
+      ":zip"
     ],
-    patterns = ["node_modules/.+"],
   }
 }
 
@@ -97,7 +97,6 @@ module "lambda_function" {
   source_path   = {
     path = local.source_dir,
     npm_requirements = false
-    patterns = ["!node_modules/.+"],
   }
 
   layers = [module.lambda_dependencies_layer.lambda_layer_arn]

@@ -1,6 +1,6 @@
-const AWS = require('aws-sdk');
+const SSM = require('aws-sdk/clients/ssm');
 
-const ssm = new AWS.SSM({ apiVersion: '2014-11-06' });
+const ssm = new SSM({ apiVersion: '2014-11-06' });
 
 const { SSM_PREFIX } = process.env;
 

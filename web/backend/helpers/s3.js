@@ -1,8 +1,7 @@
-const AWS = require('aws-sdk');
+const S3 = require('aws-sdk/clients/s3');
 
-AWS.config.update({ region: 'us-east-1' });
-
-const s3 = new AWS.S3({ apiVersion: '2006-03-01' });
+S3.config.update({ region: 'us-east-1' });
+const s3 = new S3({ apiVersion: '2006-03-01' });
 
 const Bucket = process.env.S3_BUCKET_NAME;
 

@@ -36,8 +36,4 @@ router.post('/integrations/github', async (req, res) =>
   handleGitHub({ req, res }),
 );
 
-router.post('/integrations/github/marketplace', async (_req, res) =>
-  res.json({ ok: true }),
-);
-
 module.exports = router;

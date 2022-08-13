@@ -9,11 +9,22 @@
   },
   "license": "MIT",
   "private": true,
+  "scripts": {
+    "lint": "eslint"
+  },
   "dependencies": {
     "@pulumi/aws": "^5.10.0",
-    "@pulumi/pulumi": "^3.37.2"
+    "@pulumi/aws-apigateway": "^0.0.11",
+    "@pulumi/pulumi": "^3.37.2",
+    "aws-lambda": "^1.0.7"
   },
   "devDependencies": {
-    "@pulumi/awsx": "^0.40.0"
+    "@types/aws-lambda": "^8.10.102",
+    "@types/node": "^18.7.3",
+    "@typescript-eslint/eslint-plugin": "^5.33.0",
+    "@typescript-eslint/parser": "^5.33.0",
+    "eslint": "^8.21.0",
+    "eslint-config-airbnb-typescript": "^17.0.0",
+    "prettier": "^2.7.1"
   }
 }

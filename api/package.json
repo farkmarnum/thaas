@@ -1,0 +1,19 @@
+{
+  "name": "thaas-backend-api",
+  "version": "0.1.0",
+  "description": "Tom Hanks As A Service - Backend API",
+  "author": "Mark Farnum",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/farkmarnum/thaas.git"
+  },
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "@pulumi/aws": "^5.10.0",
+    "@pulumi/pulumi": "^3.37.2"
+  },
+  "devDependencies": {
+    "@pulumi/awsx": "^0.40.0"
+  }
+}

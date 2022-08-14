@@ -19,7 +19,7 @@ const API_ROUTES = {
   'integrations/slack/oauth': slackOAuth,
 };
 
-const role = (bucketArn: Pulumi.Output<string>) =>
+const createRole = (bucketArn: Pulumi.Output<string>) =>
   new aws.iam.Role('apiLambdasRole', {
     assumeRolePolicy: `{
   "Version": "2012-10-17",
@@ -70,13 +70,13 @@ const role = (bucketArn: Pulumi.Output<string>) =>
     ],
   });
 
-const makeLambda = (
+const createLambdaCallback = (
   callback: aws.lambda.Callback<APIGatewayProxyEvent, APIGatewayProxyResult>,
-  bucketArn: Pulumi.Output<string>,
+  role: aws.iam.Role,
 ) =>
   new aws.lambda.CallbackFunction('mylambda', {
     callback,
-    role: role(bucketArn),
+    role,
     environment: { variables: configForLambda },
   });
 
@@ -84,12 +84,15 @@ type Route = awsx.apigateway.Route;
 
 const API_PREFIX = 'api/v1';
 
-const lambdaBackedRoutes = (bucketArn: Pulumi.Output<string>): Route[] =>
-  Object.entries(API_ROUTES).map(([path, handler]) => ({
+const lambdaBackedRoutes = (bucketArn: Pulumi.Output<string>): Route[] => {
+  const iamRole = createRole(bucketArn);
+
+  return Object.entries(API_ROUTES).map(([path, handler]) => ({
     path: `${API_PREFIX}/${path}`,
     method: 'ANY',
-    eventHandler: makeLambda(handler, bucketArn),
+    eventHandler: createLambdaCallback(handler, iamRole),
   }));
+};
 
 const s3ImagesRoute = (bucketDomainName: Pulumi.Output<string>): Route => ({
   path: '/images/{path+}',

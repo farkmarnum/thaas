@@ -1,3 +1,4 @@
 name: thaas
 runtime: nodejs
 description: Tom Hanks As A Service
+main: src/index.ts

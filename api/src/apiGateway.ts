@@ -1,3 +1,5 @@
+import * as path from 'path';
+
 import * as Pulumi from '@pulumi/pulumi';
 import * as aws from '@pulumi/aws';
 import * as awsx from '@pulumi/awsx';
@@ -105,7 +107,7 @@ const s3ImagesRoute = (bucketDomainName: Pulumi.Output<string>): Route => ({
 
 const staticFrontendRoute: Route = {
   path: '/{path+}',
-  localPath: 'www',
+  localPath: path.join(__dirname, '../../www'),
 };
 
 const createApiGateway = (imagesBucket: aws.s3.Bucket) =>

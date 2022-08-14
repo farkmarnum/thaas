@@ -1,6 +1,6 @@
 import * as aws from '@pulumi/aws';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { installer } from '../../../helpers/slack';
+import { getInstaller } from '../../../helpers/slack';
 import ReqResMock from '../../../helpers/ReqResMock';
 
 const handler: aws.lambda.Callback<
@@ -12,6 +12,7 @@ const handler: aws.lambda.Callback<
     headers: event.headers,
   });
 
+  const installer = getInstaller();
   await installer.handleCallback(req as any, res as any);
 
   return res.state;

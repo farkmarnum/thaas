@@ -1,35 +1,12 @@
-import * as awsx from '@pulumi/awsx';
-import tomHandler from './handlers/tom';
+import createApiGateway from './apiGateway';
+import createBucket from './bucket';
+import createDns from './dns';
 
-type Route = awsx.apigateway.Route;
+// Bucket for image hosting:
+const bucket = createBucket();
 
-const API_PREFIX = 'api/v1';
+// API Gateway + Lambda Functions + Static frontend:
+const apiGateway = createApiGateway(bucket);
 
-const lambdaBackendRoutes: Route[] = [
-  {
-    path: `${API_PREFIX}/tom`,
-    method: 'ANY',
-    eventHandler: tomHandler,
-  },
-  {
-    path: `${API_PREFIX}/integrations/slack`,
-    method: 'ANY',
-    eventHandler: tomHandler, // TODO
-  },
-  {
-    path: `${API_PREFIX}/integrations/github`,
-    method: 'ANY',
-    eventHandler: tomHandler, // TODO
-  },
-];
-
-const staticFrontendRoute: Route = {
-  path: '/{path+}',
-  localPath: 'www',
-};
-
-const api = new awsx.apigateway.API('api', {
-  routes: [...lambdaBackendRoutes, staticFrontendRoute],
-});
-
-console.info(api); // TODO
+// DNS Records:
+createDns(apiGateway);

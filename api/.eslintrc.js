@@ -28,8 +28,8 @@ module.exports = {
       'error',
       {
         devDependencies: [
-          './src/helpers/s3.ts',
-          './src/helpers/ssm.ts',
+          './src/lambda/helpers/s3.ts',
+          './src/lambda/helpers/ssm.ts',
         ],
       },
     ],

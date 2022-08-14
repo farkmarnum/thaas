@@ -1,7 +1,9 @@
 import * as AWS from 'aws-sdk';
 
-AWS.config.update({ region: 'us-east-1' });
-const s3 = new AWS.S3({ apiVersion: '2006-03-01' });
+const getS3 = () => {
+  AWS.config.update({ region: 'us-east-1' });
+  return new AWS.S3({ apiVersion: '2006-03-01' });
+};
 
 const getBucketName = () => {
   const { S3_BUCKET_NAME } = process.env;
@@ -12,8 +14,9 @@ const getBucketName = () => {
 // Filter out null/undefined in a way that TS can infer:
 const notNullOrUndefined = <T>(x: T | undefined | null): x is T => x != null;
 
-export const listObjects = (): Promise<string[]> =>
-  new Promise((resolve, reject) => {
+export const listObjects = (): Promise<string[]> => {
+  const s3 = getS3();
+  return new Promise((resolve, reject) => {
     s3.listObjects({ Bucket: getBucketName() }, (err, data) => {
       if (err) {
         console.error(err);
@@ -26,14 +29,16 @@ export const listObjects = (): Promise<string[]> =>
       }
     });
   });
+};
 
 export const getObject = (
   key: string,
 ): Promise<{
   body: string | Buffer | Uint8Array;
   headers: Record<string, any>;
-}> =>
-  new Promise((resolve, reject) => {
+}> => {
+  const s3 = getS3();
+  return new Promise((resolve, reject) => {
     s3.getObject({ Bucket: getBucketName(), Key: key })
       .on('httpHeaders', (_statusCode, headersFromS3, response) => {
         const headers = {
@@ -49,3 +54,4 @@ export const getObject = (
         reject(err);
       });
   });
+};

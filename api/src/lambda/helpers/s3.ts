@@ -1,11 +1,10 @@
 import * as AWS from 'aws-sdk';
-import Config from '../../config';
 
 AWS.config.update({ region: 'us-east-1' });
 
 const s3 = new AWS.S3({ apiVersion: '2006-03-01' });
 
-const { S3_BUCKET_NAME: Bucket } = Config;
+const { S3_BUCKET_NAME: Bucket } = process.env;
 
 // Filter out null/undefined in a way that TS can infer:
 const notNullOrUndefined = <T>(x: T | undefined | null): x is T => x != null;

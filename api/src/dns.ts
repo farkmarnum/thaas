@@ -1,17 +1,17 @@
 import * as aws from '@pulumi/aws';
 import * as awsx from '@pulumi/awsx';
-import Config from './config';
+import { DOMAIN } from './config';
 
 const createDns = (apiGateway: awsx.apigateway.API) => {
   const hostedZone = aws.route53.getZone({
-    name: Config.DOMAIN,
+    name: DOMAIN,
     privateZone: false,
   });
 
   const zoneId = hostedZone.then((zone) => zone.zoneId);
 
   const cert = new aws.acm.Certificate('apiDomainCert', {
-    domainName: Config.DOMAIN,
+    domainName: DOMAIN,
     validationMethod: 'DNS',
   });
 
@@ -47,13 +47,13 @@ const createDns = (apiGateway: awsx.apigateway.API) => {
 
   const apiDomainName = new aws.apigateway.DomainName('apiDomainName', {
     certificateArn: certValidation.certificateArn,
-    domainName: Config.DOMAIN,
+    domainName: DOMAIN,
   });
 
   const apiDnsRecord = new aws.route53.Record('apiDnsRecord', {
     zoneId,
     type: 'A',
-    name: Config.DOMAIN,
+    name: DOMAIN,
     aliases: [
       {
         name: apiDomainName.cloudfrontDomainName,

@@ -3,7 +3,7 @@ import * as aws from '@pulumi/aws';
 import * as awsx from '@pulumi/awsx';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 
-import Config from './config';
+import { SSM_PREFIX, configForLambda } from './config';
 
 import tom from './lambda/handlers/tom';
 import github from './lambda/handlers/integrations/github';
@@ -57,7 +57,7 @@ const role = (bucketArn: Pulumi.Output<string>) =>
                 'ssm:GetParameter',
                 'ssm:DeleteParameters',
               ],
-              Resource: `arn:aws:ssm:*:*:parameter${Config.SSM_PREFIX}/*`,
+              Resource: `arn:aws:ssm:*:*:parameter${SSM_PREFIX}/*`,
             },
             {
               Effect: 'Allow',
@@ -77,6 +77,7 @@ const makeLambda = (
   new aws.lambda.CallbackFunction('mylambda', {
     callback,
     role: role(bucketArn),
+    environment: { variables: configForLambda },
   });
 
 type Route = awsx.apigateway.Route;

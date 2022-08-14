@@ -4,15 +4,20 @@ const config = new pulumi.Config();
 
 const serviceBaseName = config.require('SERVICE');
 
-export default {
-  DOMAIN: config.require('DOMAIN'),
-  ALARM_EMAIL: config.requireSecret('ALARM_EMAIL').get(),
-  GH_APP_APP_ID: config.requireSecret('GH_APP_APP_ID').get(),
-  GH_APP_PRIVATE_KEY: config.requireSecret('GH_APP_PRIVATE_KEY').get(),
-  GH_APP_WEBHOOK_SECRET: config.requireSecret('GH_APP_WEBHOOK_SECRET').get(),
-  SLACK_CLIENT_ID: config.requireSecret('SLACK_CLIENT_ID').get(),
-  SLACK_CLIENT_SECRET: config.requireSecret('SLACK_CLIENT_SECRET').get(),
-  SLACK_STATE_SECRET: config.requireSecret('SLACK_STATE_SECRET').get(),
-  S3_BUCKET_NAME: `${serviceBaseName}-images`,
-  SSM_PREFIX: serviceBaseName,
+// NON-SECRET CONFIG:
+export const DOMAIN = config.require('DOMAIN');
+export const SSM_PREFIX = serviceBaseName;
+export const S3_BUCKET_NAME = `${serviceBaseName}-images`;
+
+// WITH SECRET CONFIG (all for lambda env vars):
+export const configForLambda = {
+  GH_APP_APP_ID: config.requireSecret('GH_APP_APP_ID'),
+  GH_APP_PRIVATE_KEY: config.requireSecret('GH_APP_PRIVATE_KEY'),
+  GH_APP_WEBHOOK_SECRET: config.requireSecret('GH_APP_WEBHOOK_SECRET'),
+  SLACK_CLIENT_ID: config.requireSecret('SLACK_CLIENT_ID'),
+  SLACK_CLIENT_SECRET: config.requireSecret('SLACK_CLIENT_SECRET'),
+  SLACK_STATE_SECRET: config.requireSecret('SLACK_STATE_SECRET'),
+  DOMAIN,
+  S3_BUCKET_NAME,
+  SSM_PREFIX,
 };

@@ -1,8 +1,8 @@
 import { InstallProvider, LogLevel } from '@slack/oauth';
 import * as SSM from './ssm';
-import Config from '../../config';
 
-const { SLACK_CLIENT_ID, SLACK_CLIENT_SECRET, SLACK_STATE_SECRET } = Config;
+const { SLACK_CLIENT_ID, SLACK_CLIENT_SECRET, SLACK_STATE_SECRET } =
+  process.env;
 
 export const installer = new InstallProvider({
   clientId: SLACK_CLIENT_ID,

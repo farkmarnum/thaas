@@ -1,5 +1,6 @@
 import { getObject, listObjects } from './s3';
-import Config from '../../config';
+
+const { DOMAIN } = process.env;
 
 export const getRandomTomKey = async () => {
   const objects = await listObjects();
@@ -11,7 +12,7 @@ export const getRandomTomKey = async () => {
 
 export const getRandomTomUrl = async () => {
   const key = await getRandomTomKey();
-  return `${Config.DOMAIN}/images/${key}`;
+  return `${DOMAIN}/images/${key}`;
 };
 
 export const getRandomTomData = async () => {

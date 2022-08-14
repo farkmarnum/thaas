@@ -1,4 +1,4 @@
-import Config from '../../config';
+const { DOMAIN } = process.env;
 
 const ReqResMock = ({
   path,
@@ -9,7 +9,7 @@ const ReqResMock = ({
 }) => {
   // REQUEST:
   const req = {
-    url: `https://${Config.DOMAIN}/${path}`,
+    url: `https://${DOMAIN}/${path}`,
     headers: reqHeaders,
   };
 

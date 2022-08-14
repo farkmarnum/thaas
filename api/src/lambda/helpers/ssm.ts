@@ -1,9 +1,9 @@
 import * as AWS from 'aws-sdk';
-import Config from '../../config';
 
 const ssm = new AWS.SSM({ apiVersion: '2014-11-06' });
 
-const PREFIX = `${Config.SSM_PREFIX}/slack/`;
+const { SSM_PREFIX } = process.env;
+const PREFIX = `${SSM_PREFIX}/slack/`;
 const prefix = (s: string) => `${PREFIX}${s}`;
 
 export const get = (param: string): Promise<string | undefined> =>

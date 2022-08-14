@@ -3,9 +3,9 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { Probot } from 'probot';
 
 import probotApp from '../../../helpers/probot';
-import Config from '../../../../config';
 
-const { GH_APP_APP_ID, GH_APP_PRIVATE_KEY, GH_APP_WEBHOOK_SECRET } = Config;
+const { GH_APP_APP_ID, GH_APP_PRIVATE_KEY, GH_APP_WEBHOOK_SECRET } =
+  process.env;
 
 const lowercaseKeys = <T>(obj: Record<string, T>): Record<string, T> =>
   Object.fromEntries<T>(
@@ -19,9 +19,7 @@ const handler: aws.lambda.Callback<
   try {
     const probot = new Probot({
       appId: GH_APP_APP_ID,
-      privateKey: Buffer.from(GH_APP_PRIVATE_KEY || '', 'base64').toString(
-        'utf-8',
-      ),
+      privateKey: Buffer.from(GH_APP_PRIVATE_KEY, 'base64').toString('utf-8'),
       secret: GH_APP_WEBHOOK_SECRET,
     });
 

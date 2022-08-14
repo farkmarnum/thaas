@@ -12,3 +12,4 @@ const apiGateway = createApiGateway(bucket);
 createDns(apiGateway);
 
 // TODO: metric alarms
+// config.requireSecret('ALARM_EMAIL')

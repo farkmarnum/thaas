@@ -1,11 +1,12 @@
 import { Probot, Context } from 'probot';
 import { getRandomTomUrl } from './util';
-import Config from '../../config';
+
+const { DOMAIN } = process.env;
 
 const hasCommand = (commentBody: string) =>
   commentBody && /^!hanks\b/m.test(commentBody);
 
-const HOMEPAGE = `https://${Config.DOMAIN}`;
+const HOMEPAGE = `https://${DOMAIN}`;
 
 const getOriginalCommentUrl = (context: Context) =>
   ((context.payload as any).comment || (context.payload as any).review || {})

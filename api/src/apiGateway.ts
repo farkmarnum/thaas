@@ -7,19 +7,25 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 
 import { SSM_PREFIX, configForLambda } from './config';
 
-import tom from './lambda/handlers/tom';
-import github from './lambda/handlers/integrations/github';
-import slack from './lambda/handlers/integrations/slack';
-import slackInstall from './lambda/handlers/integrations/slack/install';
-import slackOAuth from './lambda/handlers/integrations/slack/oauth';
+const API_ROUTES = [
+  'tom',
+  'integrations/github',
+  'integrations/slack',
+  'integrations/slack/install',
+  'integrations/slack/oauth',
+];
 
-const API_ROUTES = {
-  tom,
-  'integrations/github': github,
-  'integrations/slack': slack,
-  'integrations/slack/install': slackInstall,
-  'integrations/slack/oauth': slackOAuth,
-};
+// const API_ROUTES = [
+//   tom: import('./lambda/handlers/tom'),
+//   'integrations/github': import('./lambda/handlers/integrations/github'),
+//   'integrations/slack': import('./lambda/handlers/integrations/slack'),
+//   'integrations/slack/install': import(
+//     './lambda/handlers/integrations/slack/install'
+//   ),
+//   'integrations/slack/oauth': import(
+//     './lambda/handlers/integrations/slack/oauth'
+//   ),
+// };
 
 const createRole = (bucketArn: Pulumi.Output<string>) =>
   new aws.iam.Role('apiLambdasRole', {
@@ -86,14 +92,21 @@ type Route = awsx.apigateway.Route;
 
 const API_PREFIX = 'api/v1';
 
-const lambdaBackedRoutes = (bucketArn: Pulumi.Output<string>): Route[] => {
+const createLambdaBackedRoutes = (
+  bucketArn: Pulumi.Output<string>,
+): Promise<Route[]> => {
   const iamRole = createRole(bucketArn);
 
-  return Object.entries(API_ROUTES).map(([path, handler]) => ({
-    path: `${API_PREFIX}/${path}`,
-    method: 'ANY',
-    eventHandler: createLambdaCallback(handler, iamRole),
-  }));
+  return Promise.all(
+    API_ROUTES.map(async (path) => ({
+      path: `${API_PREFIX}/${path}`,
+      method: 'ANY',
+      eventHandler: createLambdaCallback(
+        (await import(`./lambda/handlers/${path}`)).default,
+        iamRole,
+      ),
+    })),
+  );
 };
 
 const s3ImagesRoute = (bucketDomainName: Pulumi.Output<string>): Route => ({
@@ -110,13 +123,16 @@ const staticFrontendRoute: Route = {
   localPath: pathlib.join(__dirname, '../../www'),
 };
 
-const createApiGateway = (imagesBucket: aws.s3.Bucket) =>
-  new awsx.apigateway.API('api', {
+const createApiGateway = async (imagesBucket: aws.s3.Bucket) => {
+  const lambdaBackedRoutes = await createLambdaBackedRoutes(imagesBucket.arn);
+
+  return new awsx.apigateway.API('api', {
     routes: [
-      ...lambdaBackedRoutes(imagesBucket.arn),
+      ...lambdaBackedRoutes,
       s3ImagesRoute(imagesBucket.bucketDomainName),
       staticFrontendRoute,
     ],
   });
+};
 
 export default createApiGateway;

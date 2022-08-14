@@ -4,6 +4,10 @@ import * as SSM from './ssm';
 const { SLACK_CLIENT_ID, SLACK_CLIENT_SECRET, SLACK_STATE_SECRET } =
   process.env;
 
+if (!SLACK_CLIENT_ID) throw new Error('SLACK_CLIENT_ID must be set!');
+if (!SLACK_CLIENT_SECRET) throw new Error('SLACK_CLIENT_SECRET must be set!');
+if (!SLACK_STATE_SECRET) throw new Error('SLACK_STATE_SECRET must be set!');
+
 export const getInstaller = () =>
   new InstallProvider({
     clientId: SLACK_CLIENT_ID,

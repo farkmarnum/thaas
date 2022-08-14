@@ -1,4 +1,5 @@
 const { DOMAIN } = process.env;
+if (!DOMAIN) throw new Error('DOMAIN must be set!');
 
 const ReqResMock = ({
   path,

@@ -4,7 +4,10 @@ AWS.config.update({ region: 'us-east-1' });
 
 const s3 = new AWS.S3({ apiVersion: '2006-03-01' });
 
-const { S3_BUCKET_NAME: Bucket } = process.env;
+const { S3_BUCKET_NAME } = process.env;
+if (!S3_BUCKET_NAME) throw new Error('S3_BUCKET_NAME must be set!');
+
+const Bucket = S3_BUCKET_NAME;
 
 // Filter out null/undefined in a way that TS can infer:
 const notNullOrUndefined = <T>(x: T | undefined | null): x is T => x != null;

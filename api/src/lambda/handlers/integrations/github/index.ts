@@ -7,6 +7,11 @@ import probotApp from '../../../helpers/probot';
 const { GH_APP_APP_ID, GH_APP_PRIVATE_KEY, GH_APP_WEBHOOK_SECRET } =
   process.env;
 
+if (!GH_APP_APP_ID) throw new Error('GH_APP_APP_ID must be set!');
+if (!GH_APP_PRIVATE_KEY) throw new Error('GH_APP_PRIVATE_KEY must be set!');
+if (!GH_APP_WEBHOOK_SECRET)
+  throw new Error('GH_APP_WEBHOOK_SECRET must be set!');
+
 const lowercaseKeys = <T>(obj: Record<string, T>): Record<string, T> =>
   Object.fromEntries<T>(
     Object.entries<T>(obj).map(([key, value]) => [key.toLowerCase(), value]),

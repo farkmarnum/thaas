@@ -2,6 +2,7 @@ import { Probot, Context } from 'probot';
 import { getRandomTomUrl } from './util';
 
 const { DOMAIN } = process.env;
+if (!DOMAIN) throw new Error('DOMAIN must be set!');
 
 const hasCommand = (commentBody: string) =>
   commentBody && /^!hanks\b/m.test(commentBody);

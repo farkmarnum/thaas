@@ -1,6 +1,7 @@
 import { getObject, listObjects } from './s3';
 
 const { DOMAIN } = process.env;
+if (!DOMAIN) throw new Error('DOMAIN must be set!');
 
 export const getRandomTomKey = async () => {
   const objects = await listObjects();

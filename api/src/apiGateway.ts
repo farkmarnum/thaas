@@ -66,12 +66,17 @@ const createRole = (bucketArn: Pulumi.Output<string>) =>
     ],
   });
 
-const createLambdaCallback = (
-  callback: aws.lambda.Callback<APIGatewayProxyEvent, APIGatewayProxyResult>,
-  role: aws.iam.Role,
-) =>
-  new aws.lambda.CallbackFunction('mylambda', {
-    callback,
+const createLambdaCallback = ({
+  name,
+  handler,
+  role,
+}: {
+  name: string;
+  handler: aws.lambda.Callback<APIGatewayProxyEvent, APIGatewayProxyResult>;
+  role: aws.iam.Role;
+}) =>
+  new aws.lambda.CallbackFunction(name, {
+    callback: handler,
     role,
     environment: { variables: configForLambda },
   });
@@ -83,16 +88,17 @@ const API_PREFIX = 'api/v1';
 const createLambdaBackedRoutes = (
   bucketArn: Pulumi.Output<string>,
 ): Promise<Route[]> => {
-  const iamRole = createRole(bucketArn);
+  const role = createRole(bucketArn);
 
   return Promise.all(
     API_ROUTES.map(async (path) => ({
       path: `${API_PREFIX}/${path}`,
       method: 'ANY',
-      eventHandler: createLambdaCallback(
-        (await import(`./lambda/handlers/${path}`)).default,
-        iamRole,
-      ),
+      eventHandler: createLambdaCallback({
+        name: path,
+        handler: (await import(`./lambda/handlers/${path}`)).default,
+        role,
+      }),
     })),
   );
 };

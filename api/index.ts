@@ -1,6 +1,6 @@
-import createApiGateway from './apiGateway';
-import createBucket from './bucket';
-import createDns from './dns';
+import createApiGateway from './src/apiGateway';
+import createBucket from './src/bucket';
+import createDns from './src/dns';
 
 // Bucket for image hosting:
 const bucket = createBucket();

@@ -4,29 +4,34 @@ module.exports = {
   },
   root: true,
   parser: '@typescript-eslint/parser',
-  plugins: ['@typescript-eslint', 'prettier'],
+  plugins: [
+    '@typescript-eslint',
+    'prettier'
+  ],
   extends: [
-    'eslint:recommended',
-    'plugin:@typescript-eslint/eslint-recommended',
-    'plugin:@typescript-eslint/recommended',
-    'airbnb/base',
+    'airbnb-base',
     'airbnb-typescript/base',
     'prettier',
   ],
   parserOptions: {
-    project: './tsconfig.json'
+    project: './tsconfig.json',
   },
   rules: {
     'prettier/prettier': 'error',
 
-    // indent: 'off',
-    // 'implicit-arrow-linebreak': 'off',
-    // 'operator-linebreak': 'off',
-    // 'max-len': 'off',
-    // 'comma-dangle': 'off',
-    // 'function-paren-newline': 'off',
+    'import/prefer-default-export': 'off',
 
-    'prefer-default-export': 'off',
     'no-console': ['error', { allow: ['info', 'warn', 'error'] }],
+
+    // The aws-sdk package is already installed in AWS Lambda Node runtimes:
+    'import/no-extraneous-dependencies': [
+      'error',
+      {
+        devDependencies: [
+          './src/helpers/s3.ts',
+          './src/helpers/ssm.ts',
+        ],
+      },
+    ],
   },
 };

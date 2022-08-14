@@ -12,5 +12,8 @@
     "noImplicitReturns": true,
     "forceConsistentCasingInFileNames": true,
     "strictNullChecks": true
-  }
+  },
+  "include": [
+    "src"
+  ]
 }

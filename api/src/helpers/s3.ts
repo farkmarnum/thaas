@@ -23,20 +23,25 @@ export const listObjects = () =>
     });
   });
 
-export const getObject = (key: string): Promise<{body: string | Buffer | Uint8Array, headers: Record<string, any>}> =>
+export const getObject = (
+  key: string,
+): Promise<{
+  body: string | Buffer | Uint8Array;
+  headers: Record<string, any>;
+}> =>
   new Promise((resolve, reject) => {
     s3.getObject({ Bucket, Key: key })
-      .on('httpHeaders', (_statusCode, headers, response) => {
-        headers = {
-          'content-length': headers['content-length'],
-          'content-type': headers['content-type'],
+      .on('httpHeaders', (_statusCode, headersFromS3, response) => {
+        const headers = {
+          'content-length': headersFromS3['content-length'],
+          'content-type': headersFromS3['content-type'],
         };
         const { body } = response.httpResponse;
 
-        resolve({ body, headers })
+        resolve({ body, headers });
       })
       .on('error', (err) => {
         console.error(err);
         reject(err);
-      })
-    });
+      });
+  });

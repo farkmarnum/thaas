@@ -2,7 +2,7 @@ import * as pulumi from '@pulumi/pulumi';
 
 const config = new pulumi.Config();
 
-const serviceBaseName = config.require('SERVICE');
+export const serviceBaseName = config.require('SERVICE');
 
 // NON-SECRET CONFIG:
 export const DOMAIN = config.require('DOMAIN');

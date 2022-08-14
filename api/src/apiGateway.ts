@@ -5,7 +5,7 @@ import * as aws from '@pulumi/aws';
 import * as awsx from '@pulumi/awsx';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 
-import { SSM_PREFIX, configForLambda } from './config';
+import { SSM_PREFIX, configForLambda, serviceBaseName } from './config';
 
 const API_ROUTES = [
   'tom',
@@ -80,12 +80,15 @@ const createLambdaCallback = ({
   name: string;
   handler: aws.lambda.Callback<APIGatewayProxyEvent, APIGatewayProxyResult>;
   role: aws.iam.Role;
-}) =>
-  new aws.lambda.CallbackFunction(name, {
+}) => {
+  const prefixedName = `${serviceBaseName}_${name.replace(/\//g, '_')}`;
+
+  return new aws.lambda.CallbackFunction(prefixedName, {
     callback: handler,
     role,
     environment: { variables: configForLambda },
   });
+};
 
 type Route = awsx.apigateway.Route;
 

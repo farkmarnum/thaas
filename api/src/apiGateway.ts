@@ -34,34 +34,40 @@ const createRole = (bucketArn: Pulumi.Output<string>) =>
     inlinePolicies: [
       {
         name: 'my_inline_policy',
-        policy: JSON.stringify({
-          Version: '2012-10-17',
-          Statement: [
-            {
-              Effect: 'Allow',
-              Action: ['s3:ListBucket', 's3:GetObject', 's3:GetObjectVersion'],
-              Resource: [bucketArn, bucketArn.apply((arn) => `${arn}/*`)],
-            },
-            {
-              Effect: 'Allow',
-              Action: [
-                'ssm:PutParameter',
-                'ssm:DeleteParameter',
-                'ssm:GetParameterHistory',
-                'ssm:GetParametersByPath',
-                'ssm:GetParameters',
-                'ssm:GetParameter',
-                'ssm:DeleteParameters',
-              ],
-              Resource: `arn:aws:ssm:*:*:parameter${SSM_PREFIX}/*`,
-            },
-            {
-              Effect: 'Allow',
-              Action: 'ssm:DescribeParameters',
-              Resource: '*',
-            },
-          ],
-        }),
+        policy: bucketArn.apply((arn) =>
+          JSON.stringify({
+            Version: '2012-10-17',
+            Statement: [
+              {
+                Effect: 'Allow',
+                Action: [
+                  's3:ListBucket',
+                  's3:GetObject',
+                  's3:GetObjectVersion',
+                ],
+                Resource: [arn, `${arn}/*`],
+              },
+              {
+                Effect: 'Allow',
+                Action: [
+                  'ssm:PutParameter',
+                  'ssm:DeleteParameter',
+                  'ssm:GetParameterHistory',
+                  'ssm:GetParametersByPath',
+                  'ssm:GetParameters',
+                  'ssm:GetParameter',
+                  'ssm:DeleteParameters',
+                ],
+                Resource: `arn:aws:ssm:*:*:parameter${SSM_PREFIX}/*`,
+              },
+              {
+                Effect: 'Allow',
+                Action: 'ssm:DescribeParameters',
+                Resource: '*',
+              },
+            ],
+          }),
+        ),
       },
     ],
   });

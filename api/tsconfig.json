@@ -11,7 +11,8 @@
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "forceConsistentCasingInFileNames": true,
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "skipLibCheck": true
   },
   "include": [
     "src",

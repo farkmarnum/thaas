@@ -1,8 +1,5 @@
 import { getObject, listObjects } from './s3';
 
-const { DOMAIN } = process.env;
-if (!DOMAIN) throw new Error('DOMAIN must be set!');
-
 export const getRandomTomKey = async () => {
   const objects = await listObjects();
   const index = Math.floor(objects.length * Math.random());
@@ -12,7 +9,11 @@ export const getRandomTomKey = async () => {
 };
 
 export const getRandomTomUrl = async () => {
+  const { DOMAIN } = process.env;
+  if (!DOMAIN) throw new Error('DOMAIN must be set!');
+
   const key = await getRandomTomKey();
+
   return `${DOMAIN}/images/${key}`;
 };
 

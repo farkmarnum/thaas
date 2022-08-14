@@ -1,6 +1,3 @@
-const { DOMAIN } = process.env;
-if (!DOMAIN) throw new Error('DOMAIN must be set!');
-
 const ReqResMock = ({
   path,
   headers: reqHeaders,
@@ -8,6 +5,9 @@ const ReqResMock = ({
   path: string;
   headers: Record<string, any>;
 }) => {
+  const { DOMAIN } = process.env;
+  if (!DOMAIN) throw new Error('DOMAIN must be set!');
+
   // REQUEST:
   const req = {
     url: `https://${DOMAIN}/${path}`,

@@ -1,15 +1,15 @@
 import { InstallProvider, LogLevel } from '@slack/oauth';
 import * as SSM from './ssm';
 
-const { SLACK_CLIENT_ID, SLACK_CLIENT_SECRET, SLACK_STATE_SECRET } =
-  process.env;
+export const getInstaller = () => {
+  const { SLACK_CLIENT_ID, SLACK_CLIENT_SECRET, SLACK_STATE_SECRET } =
+    process.env;
 
-if (!SLACK_CLIENT_ID) throw new Error('SLACK_CLIENT_ID must be set!');
-if (!SLACK_CLIENT_SECRET) throw new Error('SLACK_CLIENT_SECRET must be set!');
-if (!SLACK_STATE_SECRET) throw new Error('SLACK_STATE_SECRET must be set!');
+  if (!SLACK_CLIENT_ID) throw new Error('SLACK_CLIENT_ID must be set!');
+  if (!SLACK_CLIENT_SECRET) throw new Error('SLACK_CLIENT_SECRET must be set!');
+  if (!SLACK_STATE_SECRET) throw new Error('SLACK_STATE_SECRET must be set!');
 
-export const getInstaller = () =>
-  new InstallProvider({
+  return new InstallProvider({
     clientId: SLACK_CLIENT_ID,
     clientSecret: SLACK_CLIENT_SECRET,
     stateSecret: SLACK_STATE_SECRET,
@@ -66,3 +66,4 @@ export const getInstaller = () =>
       scopes: ['commands', 'chat:write', 'chat:write.public'],
     },
   });
+};

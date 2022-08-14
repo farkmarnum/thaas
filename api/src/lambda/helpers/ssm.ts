@@ -2,11 +2,13 @@ import * as AWS from 'aws-sdk';
 
 const ssm = new AWS.SSM({ apiVersion: '2014-11-06' });
 
-const { SSM_PREFIX } = process.env;
-if (!SSM_PREFIX) throw new Error('SSM_PREFIX must be set!');
+const prefix = (s: string) => {
+  const { SSM_PREFIX } = process.env;
+  if (!SSM_PREFIX) throw new Error('SSM_PREFIX must be set!');
 
-const PREFIX = `${SSM_PREFIX}/slack/`;
-const prefix = (s: string) => `${PREFIX}${s}`;
+  const PREFIX = `${SSM_PREFIX}/slack/`;
+  return `${PREFIX}${s}`;
+};
 
 export const get = (param: string): Promise<string | undefined> =>
   new Promise((resolve, reject) => {

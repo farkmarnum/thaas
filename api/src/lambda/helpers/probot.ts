@@ -1,19 +1,19 @@
 import { Probot, Context } from 'probot';
 import { getRandomTomUrl } from './util';
 
-const { DOMAIN } = process.env;
-if (!DOMAIN) throw new Error('DOMAIN must be set!');
-
 const hasCommand = (commentBody: string) =>
   commentBody && /^!hanks\b/m.test(commentBody);
-
-const HOMEPAGE = `https://${DOMAIN}`;
 
 const getOriginalCommentUrl = (context: Context) =>
   ((context.payload as any).comment || (context.payload as any).review || {})
     .html_url;
 
 const getCommentBody = async (context: Context) => {
+  const { DOMAIN } = process.env;
+  if (!DOMAIN) throw new Error('DOMAIN must be set!');
+
+  const HOMEPAGE = `https://${DOMAIN}`;
+
   const imageUrl = await getRandomTomUrl();
   const fullImageUrl = `https://${imageUrl}`;
 

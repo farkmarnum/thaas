@@ -15,18 +15,6 @@ const API_ROUTES = [
   'integrations/slack/oauth',
 ];
 
-// const API_ROUTES = [
-//   tom: import('./lambda/handlers/tom'),
-//   'integrations/github': import('./lambda/handlers/integrations/github'),
-//   'integrations/slack': import('./lambda/handlers/integrations/slack'),
-//   'integrations/slack/install': import(
-//     './lambda/handlers/integrations/slack/install'
-//   ),
-//   'integrations/slack/oauth': import(
-//     './lambda/handlers/integrations/slack/oauth'
-//   ),
-// };
-
 const createRole = (bucketArn: Pulumi.Output<string>) =>
   new aws.iam.Role('apiLambdasRole', {
     assumeRolePolicy: `{

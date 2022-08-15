@@ -113,16 +113,16 @@ const createLambdaBackedRoutes = (
 };
 
 const s3ImagesRoute = (bucketDomainName: Pulumi.Output<string>): Route => ({
-  path: '/images/{path+}',
+  path: '/images',
   method: 'GET',
   target: {
     type: 'http_proxy',
-    uri: bucketDomainName,
+    uri: `https://${bucketDomainName}`,
   },
 });
 
 const staticFrontendRoute: Route = {
-  path: '/{path+}',
+  path: '/',
   localPath: pathlib.join(__dirname, '../../www'),
 };
 

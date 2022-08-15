@@ -10,10 +10,6 @@ env:
   DOMAIN: thaas.io
   SERVICE: thaas
 
-  AWS_REGION: us-east-1
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
 jobs:
   deploy:
     name: Deploy infrastructure
@@ -21,25 +17,40 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - uses: hashicorp/setup-terraform@v1
+      - uses: actions/setup-node@v2
         with:
-          terraform_version: 1.2.5
-          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+          node-version: 16.x
 
-      - name: Terraform
-        working-directory: terraform
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: us-east-1
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - run: yarn install
+
+      - uses: pulumi/actions@v3
+        with:
+          command: preview
+          stack-name: prod
         env:
-          TF_VAR_domain: ${{ env.DOMAIN }}
-          TF_VAR_service: ${{ env.SERVICE }}
-          TF_VAR_SLACK_CLIENT_ID: ${{ secrets.SLACK_CLIENT_ID }}
-          TF_VAR_SLACK_CLIENT_SECRET: ${{ secrets.SLACK_CLIENT_SECRET }}
-          TF_VAR_SLACK_STATE_SECRET: ${{ secrets.SLACK_STATE_SECRET }}
-          TF_VAR_alarm_email: ${{ secrets.ALARM_EMAIL }}
-          TF_VAR_GH_APP_APP_ID: ${{ secrets.GH_APP_APP_ID }}
-          TF_VAR_GH_APP_PRIVATE_KEY: ${{ secrets.GH_APP_PRIVATE_KEY }}
-          TF_VAR_GH_APP_WEBHOOK_SECRET: ${{ secrets.GH_APP_WEBHOOK_SECRET }}
-        run: |
-          terraform init
-          terraform validate -no-color
-          terraform plan -no-color
-          terraform apply -auto-approve
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+
+      # - name: Terraform
+      #   working-directory: terraform
+      #   env:
+      #     TF_VAR_domain: ${{ env.DOMAIN }}
+      #     TF_VAR_service: ${{ env.SERVICE }}
+      #     TF_VAR_SLACK_CLIENT_ID: ${{ secrets.SLACK_CLIENT_ID }}
+      #     TF_VAR_SLACK_CLIENT_SECRET: ${{ secrets.SLACK_CLIENT_SECRET }}
+      #     TF_VAR_SLACK_STATE_SECRET: ${{ secrets.SLACK_STATE_SECRET }}
+      #     TF_VAR_alarm_email: ${{ secrets.ALARM_EMAIL }}
+      #     TF_VAR_GH_APP_APP_ID: ${{ secrets.GH_APP_APP_ID }}
+      #     TF_VAR_GH_APP_PRIVATE_KEY: ${{ secrets.GH_APP_PRIVATE_KEY }}
+      #     TF_VAR_GH_APP_WEBHOOK_SECRET: ${{ secrets.GH_APP_WEBHOOK_SECRET }}
+      #   run: |
+      #     terraform init
+      #     terraform validate -no-color
+      #     terraform plan -no-color
+      #     terraform apply -auto-approve

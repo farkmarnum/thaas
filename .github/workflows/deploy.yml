@@ -28,6 +28,13 @@ jobs:
 
       - uses: pulumi/actions@v3
         with:
+          command: refresh
+          stack-name: prod
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+
+      - uses: pulumi/actions@v3
+        with:
           command: up
           stack-name: prod
         env:

@@ -9,6 +9,7 @@
   },
   "license": "MIT",
   "private": true,
+  "main": "index.ts",
   "scripts": {
     "lint": "eslint .",
     "tc": "tsc --noEmit"

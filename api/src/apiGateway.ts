@@ -7,18 +7,16 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 
 import { SSM_PREFIX, configForLambda, serviceBaseName } from './config';
 
-import tom from './lambda/handlers/tom';
-import github from './lambda/handlers/integrations/github';
-import slack from './lambda/handlers/integrations/slack';
-import slackInstall from './lambda/handlers/integrations/slack/install';
-import slackOAuth from './lambda/handlers/integrations/slack/oauth';
-
 const API_ROUTES = {
-  tom,
-  'integrations/github': github,
-  'integrations/slack': slack,
-  'integrations/slack/install': slackInstall,
-  'integrations/slack/oauth': slackOAuth,
+  tom: import('./lambda/handlers/tom'),
+  'integrations/github': import('./lambda/handlers/integrations/github'),
+  'integrations/slack': import('./lambda/handlers/integrations/slack'),
+  'integrations/slack/install': import(
+    './lambda/handlers/integrations/slack/install'
+  ),
+  'integrations/slack/oauth': import(
+    './lambda/handlers/integrations/slack/oauth'
+  ),
 };
 
 const createRole = (bucketArn: Pulumi.Output<string>) =>
@@ -98,22 +96,24 @@ const createLambdaCallback = ({
 
 type Route = awsx.apigateway.Route;
 
-const API_PREFIX = 'api/v1';
+const API_PREFIX = '/api/v1';
 
 const createLambdaBackedRoutes = (
   bucketArn: Pulumi.Output<string>,
-): awsx.apigateway.EventHandlerRoute[] => {
+): Promise<awsx.apigateway.EventHandlerRoute[]> => {
   const role = createRole(bucketArn);
 
-  return Object.entries(API_ROUTES).map(([path, handler]) => ({
-    path: `${API_PREFIX}/${path}`,
-    method: 'ANY',
-    eventHandler: createLambdaCallback({
-      name: path,
-      handler,
-      role,
-    }),
-  }));
+  return Promise.all(
+    Object.entries(API_ROUTES).map(async ([path, handlerImport]) => ({
+      path: `${API_PREFIX}/${path}`,
+      method: 'ANY',
+      eventHandler: createLambdaCallback({
+        name: path,
+        handler: (await handlerImport).default,
+        role,
+      }),
+    })),
+  );
 };
 
 const s3ImagesRoute = (bucketDomainName: Pulumi.Output<string>): Route => ({
@@ -131,51 +131,53 @@ const staticFrontendRoute: Route = {
 };
 
 // Wrapping this in a resource so we can use 'dependsOn' to avoid errors like "Invalid ARN specified in the request" and "The REST API doesn't contain any methods"
-class RouteResources extends Pulumi.ComponentResource {
-  public routes: Route[];
+// class RouteResources extends Pulumi.ComponentResource {
+//   public routes: Route[];
 
-  constructor(
-    name: string,
-    {
-      imagesBucketArn,
-      imagesBucketDomainName,
-    }: {
-      imagesBucketArn: Pulumi.Output<string>;
-      imagesBucketDomainName: Pulumi.Output<string>;
-    },
-  ) {
-    super('pkg:index:RouteResources', name, {
-      imagesBucketArn,
-      imagesBucketDomainName,
-    });
+//   constructor(
+//     name: string,
+//     {
+//       imagesBucketArn,
+//       imagesBucketDomainName,
+//     }: {
+//       imagesBucketArn: Pulumi.Output<string>;
+//       imagesBucketDomainName: Pulumi.Output<string>;
+//     },
+//   ) {
+//     super('pkg:index:RouteResources', name, {
+//       imagesBucketArn,
+//       imagesBucketDomainName,
+//     });
 
-    const lambdaBackedRoutes = createLambdaBackedRoutes(imagesBucketArn);
+//     createLambdaBackedRoutes(imagesBucketArn).then((lambdaBackedRoutes) => {
+//       this.routes = [
+//         ...lambdaBackedRoutes,
+//         s3ImagesRoute(imagesBucketDomainName),
+//         staticFrontendRoute,
+//       ];
 
-    this.routes = [
-      ...lambdaBackedRoutes,
-      s3ImagesRoute(imagesBucketDomainName),
-      staticFrontendRoute,
-    ];
+//       this.registerOutputs({
+//         routes: this.routes,
+//       });
+//     });
+//   }
+// }
 
-    this.registerOutputs({
-      routes: this.routes,
-    });
-  }
-}
+const createApiGateway = async (imagesBucket: aws.s3.Bucket) => {
+  // const routeResources = new RouteResources('apiRoutes', {
+  //   imagesBucketArn: imagesBucket.arn,
+  //   imagesBucketDomainName: imagesBucket.bucketDomainName,
+  // });
 
-const createApiGateway = (imagesBucket: aws.s3.Bucket) => {
-  const routeResources = new RouteResources('apiRoutes', {
-    imagesBucketArn: imagesBucket.arn,
-    imagesBucketDomainName: imagesBucket.bucketDomainName,
-  });
+  const lambdaBackedRoutes = await createLambdaBackedRoutes(imagesBucket.arn);
 
-  const { routes } = routeResources;
+  const routes = [
+    ...lambdaBackedRoutes,
+    s3ImagesRoute(imagesBucket.bucketDomainName),
+    staticFrontendRoute,
+  ];
 
-  return new awsx.apigateway.API(
-    'api',
-    { routes },
-    { dependsOn: [routeResources] },
-  );
+  return new awsx.apigateway.API('api', { routes });
 };
 
 export default createApiGateway;

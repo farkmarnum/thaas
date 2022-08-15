@@ -117,7 +117,7 @@ const s3ImagesRoute = (bucketDomainName: Pulumi.Output<string>): Route => ({
   method: 'GET',
   target: {
     type: 'http_proxy',
-    uri: `https://${bucketDomainName}`,
+    uri: bucketDomainName.apply((domain) => `https://${domain}`),
   },
 });
 

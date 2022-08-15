@@ -130,16 +130,52 @@ const staticFrontendRoute: Route = {
   localPath: pathlib.join(__dirname, '../../www'),
 };
 
+// Wrapping this in a resource so we can use 'dependsOn' to avoid errors like "Invalid ARN specified in the request" and "The REST API doesn't contain any methods"
+class RouteResources extends Pulumi.ComponentResource {
+  public routes: Route[];
+
+  constructor(
+    name: string,
+    {
+      imagesBucketArn,
+      imagesBucketDomainName,
+    }: {
+      imagesBucketArn: Pulumi.Output<string>;
+      imagesBucketDomainName: Pulumi.Output<string>;
+    },
+  ) {
+    super('pkg:index:RouteResources', name, {
+      imagesBucketArn,
+      imagesBucketDomainName,
+    });
+
+    const lambdaBackedRoutes = createLambdaBackedRoutes(imagesBucketArn);
+
+    this.routes = [
+      ...lambdaBackedRoutes,
+      s3ImagesRoute(imagesBucketDomainName),
+      staticFrontendRoute,
+    ];
+
+    this.registerOutputs({
+      routes: this.routes,
+    });
+  }
+}
+
 const createApiGateway = (imagesBucket: aws.s3.Bucket) => {
-  const lambdaBackedRoutes = createLambdaBackedRoutes(imagesBucket.arn);
+  const routeResources = new RouteResources('apiRoutes', {
+    imagesBucketArn: imagesBucket.arn,
+    imagesBucketDomainName: imagesBucket.bucketDomainName,
+  });
 
-  const routes = [
-    ...lambdaBackedRoutes,
-    s3ImagesRoute(imagesBucket.bucketDomainName),
-    staticFrontendRoute,
-  ];
+  const { routes } = routeResources;
 
-  return new awsx.apigateway.API('api', { routes });
+  return new awsx.apigateway.API(
+    'api',
+    { routes },
+    { dependsOn: [routeResources] },
+  );
 };
 
 export default createApiGateway;

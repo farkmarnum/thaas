@@ -56,7 +56,7 @@ const createRole = (bucketArn: Pulumi.Output<string>) =>
                   'ssm:GetParameter',
                   'ssm:DeleteParameters',
                 ],
-                Resource: `arn:aws:ssm:*:*:parameter${SSM_PREFIX}/*`,
+                Resource: `arn:aws:ssm:*:*:parameter/${SSM_PREFIX}/*`,
               },
               {
                 Effect: 'Allow',

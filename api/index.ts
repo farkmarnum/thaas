@@ -9,7 +9,10 @@ const bucket = createBucket();
 const apiGateway = createApiGateway(bucket);
 
 // DNS Records:
-createDns(apiGateway);
+const { apiDnsRecord } = createDns(apiGateway);
 
 // TODO: metric alarms
 // config.requireSecret('ALARM_EMAIL')
+
+// Outputs:
+export const domain = apiDnsRecord.name;

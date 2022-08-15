@@ -7,17 +7,11 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 
 import { SSM_PREFIX, configForLambda, serviceBaseName } from './config';
 
-const API_ROUTES = {
-  tom: import('./lambda/handlers/tom'),
-  'integrations/github': import('./lambda/handlers/integrations/github'),
-  'integrations/slack': import('./lambda/handlers/integrations/slack'),
-  'integrations/slack/install': import(
-    './lambda/handlers/integrations/slack/install'
-  ),
-  'integrations/slack/oauth': import(
-    './lambda/handlers/integrations/slack/oauth'
-  ),
-};
+import tom from './lambda/handlers/tom';
+import github from './lambda/handlers/integrations/github';
+import slack from './lambda/handlers/integrations/slack';
+import slackInstall from './lambda/handlers/integrations/slack/install';
+import slackOAuth from './lambda/handlers/integrations/slack/oauth';
 
 const createRole = (bucketArn: Pulumi.Output<string>) =>
   new aws.iam.Role('apiLambdasRole', {
@@ -94,87 +88,71 @@ const createLambdaCallback = ({
   });
 };
 
-type Route = awsx.apigateway.Route;
-
 const API_PREFIX = '/api/v1';
 
-const createLambdaBackedRoutes = (
-  bucketArn: Pulumi.Output<string>,
-): Promise<awsx.apigateway.EventHandlerRoute[]> => {
-  const role = createRole(bucketArn);
+const createApiGateway = (imagesBucket: aws.s3.Bucket) => {
+  const role = createRole(imagesBucket.arn);
 
-  return Promise.all(
-    Object.entries(API_ROUTES).map(async ([path, handlerImport]) => ({
-      path: `${API_PREFIX}/${path}`,
-      method: 'ANY',
+  const routes: awsx.apigateway.Route[] = [
+    {
+      path: `${API_PREFIX}/tom`,
+      method: 'GET',
       eventHandler: createLambdaCallback({
-        name: path,
-        handler: (await handlerImport).default,
+        name: 'tom',
+        handler: tom,
         role,
       }),
-    })),
-  );
-};
-
-const s3ImagesRoute = (bucketDomainName: Pulumi.Output<string>): Route => ({
-  path: '/images',
-  method: 'GET',
-  target: {
-    type: 'http_proxy',
-    uri: bucketDomainName.apply((domain) => `https://${domain}`),
-  },
-});
-
-const staticFrontendRoute: Route = {
-  path: '/',
-  localPath: pathlib.join(__dirname, '../../www'),
-};
-
-// Wrapping this in a resource so we can use 'dependsOn' to avoid errors like "Invalid ARN specified in the request" and "The REST API doesn't contain any methods"
-// class RouteResources extends Pulumi.ComponentResource {
-//   public routes: Route[];
-
-//   constructor(
-//     name: string,
-//     {
-//       imagesBucketArn,
-//       imagesBucketDomainName,
-//     }: {
-//       imagesBucketArn: Pulumi.Output<string>;
-//       imagesBucketDomainName: Pulumi.Output<string>;
-//     },
-//   ) {
-//     super('pkg:index:RouteResources', name, {
-//       imagesBucketArn,
-//       imagesBucketDomainName,
-//     });
-
-//     createLambdaBackedRoutes(imagesBucketArn).then((lambdaBackedRoutes) => {
-//       this.routes = [
-//         ...lambdaBackedRoutes,
-//         s3ImagesRoute(imagesBucketDomainName),
-//         staticFrontendRoute,
-//       ];
-
-//       this.registerOutputs({
-//         routes: this.routes,
-//       });
-//     });
-//   }
-// }
-
-const createApiGateway = async (imagesBucket: aws.s3.Bucket) => {
-  // const routeResources = new RouteResources('apiRoutes', {
-  //   imagesBucketArn: imagesBucket.arn,
-  //   imagesBucketDomainName: imagesBucket.bucketDomainName,
-  // });
-
-  const lambdaBackedRoutes = await createLambdaBackedRoutes(imagesBucket.arn);
-
-  const routes = [
-    ...lambdaBackedRoutes,
-    s3ImagesRoute(imagesBucket.bucketDomainName),
-    staticFrontendRoute,
+    },
+    {
+      path: `${API_PREFIX}/integrations/slack`,
+      method: 'ANY',
+      eventHandler: createLambdaCallback({
+        name: 'slack',
+        handler: slack,
+        role,
+      }),
+    },
+    {
+      path: `${API_PREFIX}/integrations/slack/install`,
+      method: 'ANY',
+      eventHandler: createLambdaCallback({
+        name: 'slackInstall',
+        handler: slackInstall,
+        role,
+      }),
+    },
+    {
+      path: `${API_PREFIX}/integrations/slack/oauth`,
+      method: 'ANY',
+      eventHandler: createLambdaCallback({
+        name: 'slackOAuth',
+        handler: slackOAuth,
+        role,
+      }),
+    },
+    {
+      path: `${API_PREFIX}/integrations/github`,
+      method: 'ANY',
+      eventHandler: createLambdaCallback({
+        name: 'github',
+        handler: github,
+        role,
+      }),
+    },
+    {
+      path: '/images',
+      method: 'GET',
+      target: {
+        type: 'http_proxy',
+        uri: imagesBucket.bucketDomainName.apply(
+          (domain) => `https://${domain}`,
+        ),
+      },
+    },
+    {
+      path: '/',
+      localPath: pathlib.join(__dirname, '../../www'),
+    },
   ];
 
   return new awsx.apigateway.API('api', { routes });

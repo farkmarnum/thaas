@@ -7,7 +7,7 @@ const main = async () => {
   const bucket = createBucket();
 
   // API Gateway + Lambda Functions + Static frontend:
-  const apiGateway = await createApiGateway(bucket);
+  const apiGateway = createApiGateway(bucket);
 
   // DNS Records:
   createDns(apiGateway);

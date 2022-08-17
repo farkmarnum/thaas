@@ -13,6 +13,7 @@ const createDns = (apiGateway: awsx.apigateway.API) => {
   const cert = new aws.acm.Certificate('apiDomainCert', {
     domainName: DOMAIN,
     validationMethod: 'DNS',
+    subjectAlternativeNames: [`*.${DOMAIN}`],
   });
 
   const validationRecords = cert.domainValidationOptions.apply(

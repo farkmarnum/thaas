@@ -1,3 +1,4 @@
+import * as pulumi from '@pulumi/pulumi';
 import * as aws from '@pulumi/aws';
 import * as awsx from '@pulumi/awsx';
 import { DOMAIN } from './config';
@@ -46,15 +47,19 @@ const createDns = (apiGateway: awsx.apigateway.API) => {
     },
   );
 
+  const stackName = pulumi.getStack();
+
+  const apiDomain = `${stackName}.${DOMAIN}`;
+
   const apiDomainName = new aws.apigateway.DomainName('apiDomainName', {
     certificateArn: certValidation.certificateArn,
-    domainName: DOMAIN,
+    domainName: apiDomain,
   });
 
   const apiDnsRecord = new aws.route53.Record('apiDnsRecord', {
     zoneId,
     type: 'A',
-    name: DOMAIN,
+    name: apiDomain,
     aliases: [
       {
         name: apiDomainName.cloudfrontDomainName,

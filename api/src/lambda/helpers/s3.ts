@@ -14,44 +14,33 @@ const getBucketName = () => {
 // Filter out null/undefined in a way that TS can infer:
 const notNullOrUndefined = <T>(x: T | undefined | null): x is T => x != null;
 
-export const listObjects = (): Promise<string[]> => {
+export const listObjects = async (): Promise<string[]> => {
   const s3 = getS3();
-  return new Promise((resolve, reject) => {
-    s3.listObjects({ Bucket: getBucketName() }, (err, data) => {
-      if (err) {
-        console.error(err);
-        reject(err);
-      } else {
-        resolve(
-          data?.Contents?.map(({ Key }) => Key).filter(notNullOrUndefined) ||
-            [],
-        );
-      }
-    });
-  });
+  const response = await s3.listObjects({ Bucket: getBucketName() }).promise();
+
+  return (
+    response.Contents?.map(({ Key }) => Key).filter(notNullOrUndefined) || []
+  );
 };
 
-export const getObject = (
+export const getObject = async (
   key: string,
 ): Promise<{
-  body: string | Buffer | Uint8Array;
+  body: AWS.S3.Body;
   headers: Record<string, any>;
 }> => {
   const s3 = getS3();
-  return new Promise((resolve, reject) => {
-    s3.getObject({ Bucket: getBucketName(), Key: key })
-      .on('httpHeaders', (_statusCode, headersFromS3, response) => {
-        const headers = {
-          'content-length': headersFromS3['content-length'],
-          'content-type': headersFromS3['content-type'],
-        };
-        const { body } = response.httpResponse;
+  const response = await s3
+    .getObject({ Bucket: getBucketName(), Key: key })
+    .promise();
 
-        resolve({ body, headers });
-      })
-      .on('error', (err) => {
-        console.error(err);
-        reject(err);
-      });
-  });
+  const { Body, ContentLength, ContentType } = response;
+
+  return {
+    body: Body || '',
+    headers: {
+      'Content-Length': ContentLength,
+      'Content-Type': ContentType,
+    },
+  };
 };

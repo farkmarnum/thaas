@@ -10,29 +10,13 @@ const prefix = (s: string) => {
   return `${PREFIX}${s}`;
 };
 
-export const get = (param: string): Promise<string | undefined> =>
-  new Promise((resolve, reject) => {
-    ssm.getParameter({ Name: prefix(param) }, (err, data) => {
-      if (err) reject(err);
-      else resolve(data?.Parameter?.Value);
-    });
-  });
+export const get = async (param: string): Promise<string | undefined> =>
+  (await ssm.getParameter({ Name: prefix(param) }).promise())?.Parameter?.Value;
 
-export const set = (param: string, value: string) =>
-  new Promise<void>((resolve, reject) => {
-    ssm.putParameter(
-      { Type: 'String', Name: prefix(param), Value: value },
-      (err) => {
-        if (err) reject(err);
-        else resolve();
-      },
-    );
-  });
+export const set = async (param: string, value: string) =>
+  ssm
+    .putParameter({ Type: 'String', Name: prefix(param), Value: value })
+    .promise();
 
-export const del = (param: string) =>
-  new Promise<void>((resolve, reject) => {
-    ssm.deleteParameter({ Name: prefix(param) }, (err) => {
-      if (err) reject(err);
-      else resolve();
-    });
-  });
+export const del = async (param: string) =>
+  ssm.deleteParameter({ Name: prefix(param) }).promise();

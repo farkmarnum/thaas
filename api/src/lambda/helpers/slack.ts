@@ -19,10 +19,12 @@ export const getInstaller = () => {
         const value = JSON.stringify(installation);
 
         if (installation.isEnterpriseInstall && installation?.enterprise?.id) {
-          return SSM.set(installation.enterprise.id, value);
+          await SSM.set(installation.enterprise.id, value);
+          return;
         }
         if (installation?.team?.id) {
-          return SSM.set(installation.team.id, value);
+          await SSM.set(installation.team.id, value);
+          return;
         }
 
         throw new Error('Failed to store installation.');
@@ -52,11 +54,13 @@ export const getInstaller = () => {
           installQuery.isEnterpriseInstall &&
           installQuery.enterpriseId !== undefined
         ) {
-          return SSM.del(installQuery.enterpriseId);
+          await SSM.del(installQuery.enterpriseId);
+          return;
         }
 
         if (installQuery.teamId !== undefined) {
-          return SSM.del(installQuery.teamId);
+          await SSM.del(installQuery.teamId);
+          return;
         }
 
         throw new Error('Failed to delete installation');

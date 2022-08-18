@@ -37,6 +37,9 @@ const createRole = (bucketArn: Pulumi.Output<string>) =>
   ]
 }
 `,
+    managedPolicyArns: [
+      'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole',
+    ],
     inlinePolicies: [
       {
         name: 'my_inline_policy',

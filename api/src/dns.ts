@@ -3,56 +3,19 @@ import * as aws from '@pulumi/aws';
 import * as awsx from '@pulumi/awsx';
 import { DOMAIN } from './config';
 
-const createDns = (apiGateway: awsx.apigateway.API) => {
-  const hostedZone = aws.route53.getZone({
-    name: DOMAIN,
-    privateZone: false,
-  });
-
-  const zoneId = hostedZone.then((zone) => zone.zoneId);
-
-  const cert = new aws.acm.Certificate('apiDomainCert', {
-    domainName: DOMAIN,
-    validationMethod: 'DNS',
-    subjectAlternativeNames: [`*.${DOMAIN}`],
-  });
-
-  const validationRecords = cert.domainValidationOptions.apply(
-    (domainValidationOptions) =>
-      domainValidationOptions.map(
-        ({
-          domainName,
-          resourceRecordName,
-          resourceRecordType,
-          resourceRecordValue,
-        }) =>
-          new aws.route53.Record(`apiDomainCertValidation-${domainName}`, {
-            allowOverwrite: true,
-            name: resourceRecordName,
-            records: [resourceRecordValue],
-            ttl: 60,
-            type: resourceRecordType,
-            zoneId,
-          }),
-      ),
-  );
-
-  const certValidation = new aws.acm.CertificateValidation(
-    'exampleCertificateValidation',
-    {
-      certificateArn: cert.arn,
-      validationRecordFqdns: validationRecords.apply((validationRecord) =>
-        validationRecord.map((record) => record.fqdn),
-      ),
-    },
-  );
-
+const createDns = ({
+  apiGateway,
+  zoneId,
+  certificateArn,
+}: {
+  apiGateway: awsx.apigateway.API;
+  zoneId: pulumi.Output<string>;
+  certificateArn: pulumi.Output<string>;
+}) => {
   const stackName = pulumi.getStack();
-
   const apiDomain = `${stackName}.${DOMAIN}`;
-
   const apiDomainName = new aws.apigateway.DomainName('apiDomainName', {
-    certificateArn: certValidation.certificateArn,
+    certificateArn,
     domainName: apiDomain,
   });
 

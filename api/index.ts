@@ -1,19 +1,26 @@
-import createApiGateway from './src/apiGateway';
+import createCert from './src/cert';
 import createBucket from './src/bucket';
+import createLambdaRoutes from './src/lambdaRoutes';
+import createApiGateway from './src/apiGateway';
 import createDns from './src/dns';
 
-const main = async () => {
-  // Bucket for image hosting:
-  const bucket = createBucket();
+const { zoneId, certificateArn } = createCert();
 
-  // API Gateway + Lambda Functions + Static frontend:
-  const apiGateway = createApiGateway(bucket);
+const imagesBucket = createBucket();
+const imagesBucketUri = imagesBucket.bucketDomainName.apply(
+  (domain) => `https://${domain}`,
+);
 
-  // DNS Records:
-  createDns(apiGateway);
+const lambdaRoutes = createLambdaRoutes(imagesBucket.arn);
 
-  // TODO: metric alarms
-  // config.requireSecret('ALARM_EMAIL')
-};
+const apiGateway = createApiGateway({
+  lambdaRoutes,
+  imagesBucketUri,
+});
 
-main();
+const { apiDnsRecord } = createDns({ apiGateway, zoneId, certificateArn });
+
+export const { fqdn: apiDomain } = apiDnsRecord;
+
+// TODO: metric alarms
+// config.requireSecret('ALARM_EMAIL')

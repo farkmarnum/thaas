@@ -95,6 +95,7 @@ const createLambdaCallback = ({
     callback: handler,
     role,
     environment: { variables: configForLambda },
+    timeout: 20, // Set it super long to handle extreme cold starts sometimes
   });
 };
 

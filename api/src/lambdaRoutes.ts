@@ -12,11 +12,11 @@ import slackInstall from './lambda/handlers/integrations/slack/install';
 import slackOAuth from './lambda/handlers/integrations/slack/oauth';
 
 const API_ROUTES = {
-  '/tom': tom,
-  '/integrations/github': github,
-  '/integrations/slack': slack,
-  '/integrations/slack/install': slackInstall,
-  '/integrations/slack/oauth': slackOAuth,
+  tom,
+  'integrations/github': github,
+  'integrations/slack': slack,
+  'integrations/slack/install': slackInstall,
+  'integrations/slack/oauth': slackOAuth,
 };
 
 const createRole = (bucketArn: Pulumi.Output<string>) =>

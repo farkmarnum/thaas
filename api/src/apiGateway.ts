@@ -31,7 +31,12 @@ const createApiGateway = ({
     staticFrontendRoute,
   ];
 
-  return new awsx.apigateway.API('api', { routes });
+  const KiloByte = 1000;
+
+  return new awsx.apigateway.API('api', {
+    routes,
+    restApiArgs: { minimumCompressionSize: 10 * KiloByte },
+  });
 };
 
 export default createApiGateway;

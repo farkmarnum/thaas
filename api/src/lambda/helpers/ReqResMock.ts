@@ -1,16 +1,20 @@
 const ReqResMock = ({
   path,
+  queryParams,
   headers: reqHeaders,
 }: {
   path: string;
+  queryParams: Record<string, string>;
   headers: Record<string, any>;
 }) => {
   const { DOMAIN } = process.env;
   if (!DOMAIN) throw new Error('DOMAIN must be set!');
 
+  const queryString = new URLSearchParams(queryParams).toString();
+
   // REQUEST:
   const req = {
-    url: `https://${DOMAIN}/${path}`,
+    url: `https://${DOMAIN}/${path}${queryString ? '?' : ''}${queryString}`,
     headers: reqHeaders,
   };
 

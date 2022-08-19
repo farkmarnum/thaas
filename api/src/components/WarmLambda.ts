@@ -17,10 +17,10 @@ type Handler = (
 const wrapHandlerForWarmer =
   ({
     handler,
-    warmingEventRuleName,
+    eventRule,
   }: {
     handler: Handler;
-    warmingEventRuleName: string;
+    eventRule: aws.cloudwatch.EventRule;
   }): Handler =>
   async (
     event: APIGatewayProxyEvent | WarmingEvent,
@@ -30,7 +30,7 @@ const wrapHandlerForWarmer =
     if (
       warmingEvent?.resources &&
       warmingEvent.resources[0] &&
-      warmingEvent.resources[0].includes(warmingEventRuleName)
+      warmingEvent.resources[0].includes(eventRule.name.get())
     ) {
       console.info('Warming...');
       return { statusCode: 200, body: 'Warmed!' };
@@ -80,10 +80,9 @@ class WarmLambda extends pulumi.ComponentResource {
       { parent: this, ...opts },
     );
 
-    const warmingEventRuleName = eventRule.name.get();
     const wrappedHandler = wrapHandlerForWarmer({
       handler,
-      warmingEventRuleName,
+      eventRule,
     });
 
     const lambda = new aws.lambda.CallbackFunction<

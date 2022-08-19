@@ -1,5 +1,6 @@
 import * as AWS from 'aws-sdk';
 
+AWS.config.logger = console;
 const ssm = new AWS.SSM({ apiVersion: '2014-11-06' });
 
 const prefix = (s: string) => {

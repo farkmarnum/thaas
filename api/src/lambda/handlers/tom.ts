@@ -6,13 +6,27 @@ const handler: aws.lambda.Callback<
   APIGatewayProxyEvent,
   APIGatewayProxyResult
 > = async () => {
-  const { body, headers } = await getRandomTomData();
+  try {
+    let t = +new Date();
+    const { body, headers } = await getRandomTomData();
+    console.log(`getRandomTomData() total: ${+new Date() - t}`);
 
-  return {
-    statusCode: 200,
-    body,
-    headers,
-  };
+    t = +new Date();
+    const base64 = body.toString('base64');
+    console.log(`base64 conversion: ${+new Date() - t}`);
+
+    return {
+      statusCode: 200,
+      headers,
+      body: base64,
+      isBase64Encoded: true,
+    };
+  } catch (err) {
+    return {
+      statusCode: 500,
+      body: 'Server Error',
+    };
+  }
 };
 
 export default handler;

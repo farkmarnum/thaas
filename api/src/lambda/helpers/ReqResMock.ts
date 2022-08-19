@@ -1,14 +1,20 @@
+import { noUndefinedValues } from './util';
+
 const ReqResMock = ({
   path,
-  queryParams,
+  queryStringParameters,
   headers: reqHeaders,
 }: {
   path: string;
-  queryParams: Record<string, string>;
+  queryStringParameters?: Record<string, string | undefined> | null | undefined;
   headers: Record<string, any>;
 }) => {
   const { DOMAIN } = process.env;
   if (!DOMAIN) throw new Error('DOMAIN must be set!');
+
+  const queryParams = queryStringParameters
+    ? noUndefinedValues(queryStringParameters)
+    : {};
 
   const queryString = new URLSearchParams(queryParams).toString();
 

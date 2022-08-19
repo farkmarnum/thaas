@@ -1,6 +1,6 @@
 import * as aws from '@pulumi/aws';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { getRandomTomData } from '../helpers/util';
+import { getRandomTomData } from '../helpers/tom';
 
 const handler: aws.lambda.Callback<
   APIGatewayProxyEvent,

@@ -7,9 +7,12 @@ const handler: aws.lambda.Callback<
   APIGatewayProxyEvent,
   APIGatewayProxyResult
 > = async (event) => {
+  const { path, headers, queryStringParameters } = event;
+
   const { req, res } = ReqResMock({
-    path: event.path,
-    headers: event.headers,
+    path,
+    queryStringParameters,
+    headers,
   });
 
   const installer = getInstaller();

@@ -1,5 +1,5 @@
 import { Probot, Context } from 'probot';
-import { getRandomTomUrl } from './util';
+import { getRandomTomUrl } from './tom';
 
 const hasCommand = (commentBody: string) =>
   commentBody && /^!hanks\b/m.test(commentBody);

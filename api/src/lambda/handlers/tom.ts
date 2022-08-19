@@ -7,13 +7,8 @@ const handler: aws.lambda.Callback<
   APIGatewayProxyResult
 > = async () => {
   try {
-    let t = +new Date();
     const { body, headers } = await getRandomTomData();
-    console.log(`getRandomTomData() total: ${+new Date() - t}`);
-
-    t = +new Date();
     const base64 = body.toString('base64');
-    console.log(`base64 conversion: ${+new Date() - t}`);
 
     return {
       statusCode: 200,

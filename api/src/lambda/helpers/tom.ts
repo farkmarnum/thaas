@@ -18,13 +18,8 @@ export const getRandomTomUrl = async () => {
 };
 
 export const getRandomTomData = async () => {
-  let t = +new Date();
   const key = await getRandomTomKey();
-  console.log(`getRandomTomKey(): ${+new Date() - t}`);
-
-  t = +new Date();
   const { body, headers } = await getObject(key);
-  console.log(`getObject(): ${+new Date() - t}`);
 
   return {
     headers,

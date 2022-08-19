@@ -1,7 +1,7 @@
 import * as aws from '@pulumi/aws';
 import * as url from 'url';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { getRandomTomUrl } from '../../../helpers/util';
+import { getRandomTomUrl } from '../../../helpers/tom';
 
 const handleCommand = async ({
   command,

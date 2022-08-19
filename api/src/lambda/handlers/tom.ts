@@ -22,6 +22,7 @@ const handler: aws.lambda.Callback<
       isBase64Encoded: true,
     };
   } catch (err) {
+    console.error(err);
     return {
       statusCode: 500,
       body: 'Server Error',

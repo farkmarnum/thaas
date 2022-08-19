@@ -1,6 +1,12 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as aws from '@pulumi/aws';
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import {
+  APIGatewayProxyEvent,
+  APIGatewayProxyResult,
+  EventBridgeEvent,
+} from 'aws-lambda';
+
+type WarmingEvent = EventBridgeEvent<string, unknown>;
 
 /**
  * Given an aws.lambda.Callback, creates the following:
@@ -42,16 +48,25 @@ class WarmLambda extends pulumi.ComponentResource {
     );
 
     const wrappedHandler = (
-      event: APIGatewayProxyEvent,
+      event: APIGatewayProxyEvent | WarmingEvent,
       context: aws.lambda.Context,
       callback: (error: any, result: APIGatewayProxyResult) => void,
     ) => {
-      if (event.resource.includes(eventRule.name.get())) {
+      const warmingEventRuleName = eventRule.name.get();
+
+      const warmingEvent = event as WarmingEvent;
+      if (
+        warmingEvent?.resources &&
+        warmingEvent.resources[0] &&
+        warmingEvent.resources[0].includes(warmingEventRuleName)
+      ) {
         console.info('Warming...');
         callback(null, { statusCode: 200, body: 'Warmed!' });
       } else {
+        const apiGatewayEvent = event as APIGatewayProxyEvent;
+
         console.info('Running the handler...');
-        handler(event, context, callback);
+        handler(apiGatewayEvent, context, callback);
       }
     };
 

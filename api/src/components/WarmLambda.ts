@@ -8,6 +8,39 @@ import {
 
 type WarmingEvent = EventBridgeEvent<string, unknown>;
 
+// Note: this is just the aws.lambda.Callback<APIGatewayProxyEvent, APIGatewayProxyResult> type but restricted to only the promise approach (can't return void).
+type Handler = (
+  event: APIGatewayProxyEvent,
+  context: aws.lambda.Context,
+) => Promise<APIGatewayProxyResult>;
+
+const wrapHandlerForWarmer =
+  ({
+    handler,
+    warmingEventRuleName,
+  }: {
+    handler: Handler;
+    warmingEventRuleName: string;
+  }): Handler =>
+  async (
+    event: APIGatewayProxyEvent | WarmingEvent,
+    context: aws.lambda.Context,
+  ) => {
+    const warmingEvent = event as WarmingEvent;
+    if (
+      warmingEvent?.resources &&
+      warmingEvent.resources[0] &&
+      warmingEvent.resources[0].includes(warmingEventRuleName)
+    ) {
+      console.info('Warming...');
+      return { statusCode: 200, body: 'Warmed!' };
+    }
+
+    const apiGatewayEvent = event as APIGatewayProxyEvent;
+    console.info('Running the handler...');
+    return handler(apiGatewayEvent, context);
+  };
+
 /**
  * Given an aws.lambda.Callback, creates the following:
  * - a Lambda Function, which wraps the callback in some logic to short-circuit warming requests
@@ -27,7 +60,7 @@ class WarmLambda extends pulumi.ComponentResource {
   constructor(
     name: string,
     args: {
-      handler: aws.lambda.Callback<APIGatewayProxyEvent, APIGatewayProxyResult>;
+      handler: Handler;
       role?: aws.iam.Role;
       environment?: Record<string, any>;
       timeout?: number;
@@ -47,28 +80,11 @@ class WarmLambda extends pulumi.ComponentResource {
       { parent: this, ...opts },
     );
 
-    const wrappedHandler = (
-      event: APIGatewayProxyEvent | WarmingEvent,
-      context: aws.lambda.Context,
-      callback: (error: any, result: APIGatewayProxyResult) => void,
-    ) => {
-      const warmingEventRuleName = eventRule.name.get();
-
-      const warmingEvent = event as WarmingEvent;
-      if (
-        warmingEvent?.resources &&
-        warmingEvent.resources[0] &&
-        warmingEvent.resources[0].includes(warmingEventRuleName)
-      ) {
-        console.info('Warming...');
-        callback(null, { statusCode: 200, body: 'Warmed!' });
-      } else {
-        const apiGatewayEvent = event as APIGatewayProxyEvent;
-
-        console.info('Running the handler...');
-        handler(apiGatewayEvent, context, callback);
-      }
-    };
+    const warmingEventRuleName = eventRule.name.get();
+    const wrappedHandler = wrapHandlerForWarmer({
+      handler,
+      warmingEventRuleName,
+    });
 
     const lambda = new aws.lambda.CallbackFunction<
       APIGatewayProxyEvent,

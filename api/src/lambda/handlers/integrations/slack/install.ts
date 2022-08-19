@@ -16,7 +16,7 @@ const handler: aws.lambda.Callback<
   });
 
   const installer = getInstaller();
-  await installer.handleCallback(req as any, res as any);
+  await installer.handleInstallPath(req as any, res as any);
 
   return res.state;
 };

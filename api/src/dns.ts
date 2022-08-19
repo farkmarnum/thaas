@@ -12,17 +12,15 @@ const createDns = ({
   zoneId: pulumi.Output<string>;
   certificateArn: pulumi.Output<string>;
 }) => {
-  const stackName = pulumi.getStack();
-  const apiDomain = `${stackName}.${DOMAIN}`;
   const apiDomainName = new aws.apigateway.DomainName('apiDomainName', {
     certificateArn,
-    domainName: apiDomain,
+    domainName: DOMAIN,
   });
 
   const apiDnsRecord = new aws.route53.Record('apiDnsRecord', {
     zoneId,
     type: 'A',
-    name: apiDomain,
+    name: DOMAIN,
     aliases: [
       {
         name: apiDomainName.cloudfrontDomainName,

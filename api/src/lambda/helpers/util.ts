@@ -1,29 +1,11 @@
-import { getObject, listObjects } from './s3';
+// Filter out null/undefined in a way that TS can infer:
+export const notNullOrUndefined = <T>(x: T | undefined | null): x is T =>
+  x != null;
 
-export const getRandomTomKey = async () => {
-  const objects = await listObjects();
-  const index = Math.floor(objects.length * Math.random());
-  const objectName = objects[index];
-
-  return objectName;
-};
-
-export const getRandomTomUrl = async () => {
-  const { DOMAIN } = process.env;
-  if (!DOMAIN) throw new Error('DOMAIN must be set!');
-
-  const key = await getRandomTomKey();
-
-  return `${DOMAIN}/images/${key}`;
-};
-
-export const getRandomTomData = async () => {
-  const key = await getRandomTomKey();
-
-  const { body, headers } = await getObject(key);
-
-  return {
-    headers,
-    body: body.toString(),
-  };
-};
+export const noUndefinedValues = <T>(
+  obj: Record<string, T | undefined>,
+): Record<string, T> =>
+  Object.fromEntries(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    Object.entries(obj).filter(([_k, v]) => v) as [string, T][],
+  );

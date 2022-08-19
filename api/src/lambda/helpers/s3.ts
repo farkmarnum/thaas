@@ -1,7 +1,9 @@
 import * as AWS from 'aws-sdk';
+import { notNullOrUndefined } from './util';
 
 const getS3 = () => {
   AWS.config.update({ region: 'us-east-1' });
+  AWS.config.logger = console;
   return new AWS.S3({ apiVersion: '2006-03-01' });
 };
 
@@ -10,9 +12,6 @@ const getBucketName = () => {
   if (!S3_BUCKET_NAME) throw new Error('S3_BUCKET_NAME must be set!');
   return S3_BUCKET_NAME;
 };
-
-// Filter out null/undefined in a way that TS can infer:
-const notNullOrUndefined = <T>(x: T | undefined | null): x is T => x != null;
 
 export const listObjects = async (): Promise<string[]> => {
   const s3 = getS3();

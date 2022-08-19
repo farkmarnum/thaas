@@ -4,6 +4,7 @@ import * as awsx from '@pulumi/awsx';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 
 import { SSM_PREFIX, configForLambda, serviceBaseName } from './config';
+import WarmLambda from './components/WarmLambda';
 
 import tom from './lambda/handlers/tom';
 import github from './lambda/handlers/integrations/github';
@@ -91,8 +92,8 @@ const createLambdaCallback = ({
   // Replace any characters that are not "letters, numbers, hyphens, or underscores" with underscores:
   const prefixedName = `${serviceBaseName}_${name.replace(/[^a-z0_-]/gi, '_')}`;
 
-  return new aws.lambda.CallbackFunction(prefixedName, {
-    callback: handler,
+  return new WarmLambda(prefixedName, {
+    handler,
     role,
     environment: { variables: configForLambda },
     timeout: 20, // Set it super long to handle extreme cold starts sometimes
@@ -109,7 +110,7 @@ const createLambdaRoutes = (
   return Object.entries(API_ROUTES).map(([name, handler]) => ({
     path: `${API_PREFIX}/${name}`,
     method: 'ANY',
-    eventHandler: createLambdaCallback({ name, handler, role }),
+    eventHandler: createLambdaCallback({ name, handler, role }).lambda,
   }));
 };
 

@@ -17,7 +17,7 @@ export const getRandomTomUrl = async () => {
   const key = await getRandomTomKey();
   const keyWithoutPrefix = key.replace(/[^/]+\/images\//, '');
 
-  return `${DOMAIN}/images/${keyWithoutPrefix}`;
+  return `https://${DOMAIN}/images/${keyWithoutPrefix}`;
 };
 
 export const getRandomTomData = async () => {

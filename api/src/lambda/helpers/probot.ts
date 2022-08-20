@@ -15,11 +15,10 @@ const getCommentBody = async (context: Context) => {
   const HOMEPAGE = `https://${DOMAIN}`;
 
   const imageUrl = await getRandomTomUrl();
-  const fullImageUrl = `https://${imageUrl}`;
 
   const originalCommentUrl = getOriginalCommentUrl(context) || '#';
 
-  const body = `![tom hanks](${fullImageUrl})\n\n<sup>I am a [bot](${HOMEPAGE}), responding to a [comment](${originalCommentUrl}).</sup>`;
+  const body = `![tom hanks](${imageUrl})\n\n<sup>I am a [bot](${HOMEPAGE}), responding to a [comment](${originalCommentUrl}).</sup>`;
 
   return body;
 };

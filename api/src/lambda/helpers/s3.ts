@@ -1,11 +1,7 @@
 import * as AWS from 'aws-sdk';
 import { notNullOrUndefined } from './util';
 
-const { AWS_REGION } = process.env;
-
 const getS3 = async () => {
-  AWS.config.update({ region: AWS_REGION });
-
   AWS.config.logger = console;
 
   return new AWS.S3({ apiVersion: '2006-03-01' });

@@ -1,10 +1,13 @@
 import * as AWS from 'aws-sdk';
-import { AWS_REGION } from '../../config';
+import { getRegion } from '@pulumi/aws';
 import { notNullOrUndefined } from './util';
 
-const getS3 = () => {
-  AWS.config.update({ region: AWS_REGION });
+const getS3 = async () => {
+  const { name: region } = await getRegion();
+  AWS.config.update({ region });
+
   AWS.config.logger = console;
+
   return new AWS.S3({ apiVersion: '2006-03-01' });
 };
 
@@ -15,7 +18,7 @@ const getBucketName = () => {
 };
 
 export const listObjects = async (): Promise<string[]> => {
-  const s3 = getS3();
+  const s3 = await getS3();
   const response = await s3.listObjects({ Bucket: getBucketName() }).promise();
 
   return (
@@ -29,7 +32,7 @@ export const getObject = async (
   body: AWS.S3.Body;
   headers: Record<string, any>;
 }> => {
-  const s3 = getS3();
+  const s3 = await getS3();
   const response = await s3
     .getObject({ Bucket: getBucketName(), Key: key })
     .promise();

@@ -1,6 +1,4 @@
-import * as aws from '@pulumi/aws';
 import * as url from 'url';
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { getRandomTomUrl } from '../../../helpers/tom';
 
 const handleCommand = async ({
@@ -29,10 +27,7 @@ const handleCommand = async ({
   };
 };
 
-const handler: aws.lambda.Callback<
-  APIGatewayProxyEvent,
-  APIGatewayProxyResult
-> = async (event) => {
+const handler: Handler = async (event) => {
   const paramString = Buffer.from(event.body || '', 'base64').toString('ascii');
   const paramsParsed = url.parse(`example.com/?${paramString}`, true).query;
 

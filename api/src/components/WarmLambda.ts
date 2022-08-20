@@ -8,12 +8,6 @@ import {
 
 type WarmingEvent = EventBridgeEvent<string, unknown>;
 
-// Note: this is just the aws.lambda.Callback<APIGatewayProxyEvent, APIGatewayProxyResult> type but restricted to only the promise approach (can't return void).
-type Handler = (
-  event: APIGatewayProxyEvent,
-  context: aws.lambda.Context,
-) => Promise<APIGatewayProxyResult>;
-
 const wrapHandlerForWarmer =
   ({
     handler,

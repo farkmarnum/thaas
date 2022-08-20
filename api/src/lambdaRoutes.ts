@@ -1,7 +1,6 @@
 import * as Pulumi from '@pulumi/pulumi';
 import * as aws from '@pulumi/aws';
 import * as awsx from '@pulumi/awsx';
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 
 import { SSM_PREFIX, configForLambda, serviceBaseName } from './config';
 import WarmLambda from './components/WarmLambda';
@@ -86,7 +85,7 @@ const createLambdaCallback = ({
   role,
 }: {
   name: string;
-  handler: aws.lambda.Callback<APIGatewayProxyEvent, APIGatewayProxyResult>;
+  handler: Handler;
   role: aws.iam.Role;
 }) => {
   // Replace any characters that are not "letters, numbers, hyphens, or underscores" with underscores:

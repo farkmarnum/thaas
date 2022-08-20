@@ -1,11 +1,6 @@
-import * as aws from '@pulumi/aws';
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { getRandomTomData } from '../helpers/tom';
 
-const handler: aws.lambda.Callback<
-  APIGatewayProxyEvent,
-  APIGatewayProxyResult
-> = async () => {
+const handler: Handler = async () => {
   try {
     const { body, headers } = await getRandomTomData();
     const base64 = body.toString('base64');

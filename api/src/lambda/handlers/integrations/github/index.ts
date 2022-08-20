@@ -1,5 +1,3 @@
-import * as aws from '@pulumi/aws';
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { Probot } from 'probot';
 
 import probotApp from '../../../helpers/probot';
@@ -9,10 +7,7 @@ const lowercaseKeys = <T>(obj: Record<string, T>): Record<string, T> =>
     Object.entries<T>(obj).map(([key, value]) => [key.toLowerCase(), value]),
   );
 
-const handler: aws.lambda.Callback<
-  APIGatewayProxyEvent,
-  APIGatewayProxyResult
-> = async (event) => {
+const handler: Handler = async (event) => {
   const { GH_APP_APP_ID, GH_APP_PRIVATE_KEY, GH_APP_WEBHOOK_SECRET } =
     process.env;
 

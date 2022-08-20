@@ -1,10 +1,14 @@
 import * as pulumi from '@pulumi/pulumi';
+import * as aws from '@pulumi/aws';
 
 const config = new pulumi.Config();
 
 export const serviceBaseName = config.require('SERVICE');
 
 // NON-SECRET CONFIG:
+export const AWS_REGION = pulumi
+  .output(aws.getRegion())
+  .apply((region) => region.name);
 export const DOMAIN = config.require('DOMAIN');
 export const SSM_PREFIX = serviceBaseName;
 export const S3_BUCKET_NAME = `${serviceBaseName}`;
@@ -20,4 +24,5 @@ export const configForLambda = {
   DOMAIN,
   S3_BUCKET_NAME,
   SSM_PREFIX,
+  AWS_REGION,
 };

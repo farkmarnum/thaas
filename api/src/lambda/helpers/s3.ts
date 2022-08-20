@@ -1,10 +1,10 @@
 import * as AWS from 'aws-sdk';
-import { getRegion } from '@pulumi/aws';
 import { notNullOrUndefined } from './util';
 
+const { AWS_REGION } = process.env;
+
 const getS3 = async () => {
-  const { name: region } = await getRegion();
-  AWS.config.update({ region });
+  AWS.config.update({ region: AWS_REGION });
 
   AWS.config.logger = console;
 

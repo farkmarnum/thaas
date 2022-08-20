@@ -57,7 +57,7 @@ class WarmLambda extends pulumi.ComponentResource {
     args: {
       handler: Handler;
       role?: aws.iam.Role;
-      environment?: Record<string, any>;
+      environment?: aws.lambda.FunctionArgs['environment'];
       timeout?: number;
     },
     opts?: pulumi.ResourceOptions,

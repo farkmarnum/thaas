@@ -48,8 +48,7 @@ This API is also the backend for all other platform integrations.
 
 
 ## TODOs
-- add some more toms (offline)
-- add params to API to specify which type of tom
+- add some more toms
 
 
 ## hom

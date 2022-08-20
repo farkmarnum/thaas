@@ -1,5 +1,6 @@
 import * as url from 'url';
 import { getRandomTomUrl } from '../../../helpers/tom';
+import { Handler } from '../../../../types';
 
 const handleCommand = async ({
   command,

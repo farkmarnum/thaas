@@ -1,6 +1,6 @@
 import { Probot } from 'probot';
-
 import probotApp from '../../../helpers/probot';
+import { Handler } from '../../../../types';
 
 const lowercaseKeys = <T>(obj: Record<string, T>): Record<string, T> =>
   Object.fromEntries<T>(

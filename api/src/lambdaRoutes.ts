@@ -1,6 +1,7 @@
 import * as Pulumi from '@pulumi/pulumi';
 import * as aws from '@pulumi/aws';
 import * as awsx from '@pulumi/awsx';
+import { Handler } from './types';
 
 import { SSM_PREFIX, configForLambda, serviceBaseName } from './config';
 import WarmLambda from './components/WarmLambda';

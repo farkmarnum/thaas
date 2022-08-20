@@ -1,5 +1,6 @@
 import { getInstaller } from '../../../helpers/slack';
 import ReqResMock from '../../../helpers/ReqResMock';
+import { Handler } from '../../../../types';
 
 const handler: Handler = async (event) => {
   const { path, headers, queryStringParameters } = event;

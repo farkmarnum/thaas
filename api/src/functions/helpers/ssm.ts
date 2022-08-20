@@ -16,7 +16,12 @@ export const get = async (param: string): Promise<string | undefined> =>
 
 export const set = async (param: string, value: string) =>
   ssm
-    .putParameter({ Type: 'String', Name: prefix(param), Value: value })
+    .putParameter({
+      Type: 'String',
+      Name: prefix(param),
+      Value: value,
+      Overwrite: true,
+    })
     .promise();
 
 export const del = async (param: string) =>

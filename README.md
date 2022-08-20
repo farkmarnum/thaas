@@ -38,7 +38,7 @@ The THaaS bot will respond with a tom hanks pic.
 
 ### API
 
-Want to build your own Tom Hanks solution? You can access the API at https://api.thaas.io.
+You can access the API at https://api.thaas.io.
 
 ```
 curl -s https://api.thaas.io/api/v1/tom > tom.png

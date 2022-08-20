@@ -1,11 +1,13 @@
 import { getObject, listObjects } from './s3';
 
-export const getRandomTomKey = async () => {
-  const objects = await listObjects();
-  const index = Math.floor(objects.length * Math.random());
-  const objectName = objects[index];
+const getRandomTomKey = async () => {
+  let keys = await listObjects();
 
-  return objectName;
+  // This bucket has static site files in it too, so filter it to just the keys in the images/ directory
+  keys = keys.filter((k) => k.match(/[^/]+\/images\/./));
+
+  const index = Math.floor(keys.length * Math.random());
+  return keys[index];
 };
 
 export const getRandomTomUrl = async () => {
@@ -13,8 +15,9 @@ export const getRandomTomUrl = async () => {
   if (!DOMAIN) throw new Error('DOMAIN must be set!');
 
   const key = await getRandomTomKey();
+  const keyWithoutPrefix = key.replace(/[^/]+\/images\//, '');
 
-  return `${DOMAIN}/images/${key}`;
+  return `${DOMAIN}/images/${keyWithoutPrefix}`;
 };
 
 export const getRandomTomData = async () => {

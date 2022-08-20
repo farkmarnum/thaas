@@ -6,16 +6,13 @@ import createDns from './src/dns';
 
 const { zoneId, certificateArn } = createCert();
 
-const imagesBucket = createBucket();
-const imagesBucketUri = imagesBucket.bucketDomainName.apply(
-  (domain) => `https://${domain}`,
-);
+const bucket = createBucket();
 
-const lambdaRoutes = createLambdaRoutes(imagesBucket.arn);
+const lambdaRoutes = createLambdaRoutes(bucket.arn);
 
 const apiGateway = createApiGateway({
   lambdaRoutes,
-  imagesBucketUri,
+  bucket,
 });
 
 const { apiDnsRecord } = createDns({ apiGateway, zoneId, certificateArn });

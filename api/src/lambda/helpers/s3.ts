@@ -1,8 +1,9 @@
 import * as AWS from 'aws-sdk';
+import { AWS_REGION } from '../../config';
 import { notNullOrUndefined } from './util';
 
 const getS3 = () => {
-  AWS.config.update({ region: 'us-east-1' });
+  AWS.config.update({ region: AWS_REGION });
   AWS.config.logger = console;
   return new AWS.S3({ apiVersion: '2006-03-01' });
 };

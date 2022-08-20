@@ -5,9 +5,10 @@ const config = new pulumi.Config();
 export const serviceBaseName = config.require('SERVICE');
 
 // NON-SECRET CONFIG:
+export const AWS_REGION = config.require('aws:region');
 export const DOMAIN = config.require('DOMAIN');
 export const SSM_PREFIX = serviceBaseName;
-export const S3_BUCKET_NAME = `${serviceBaseName}-images`;
+export const S3_BUCKET_NAME = `${serviceBaseName}`;
 
 // WITH SECRET CONFIG (all for lambda env vars):
 export const configForLambda = {

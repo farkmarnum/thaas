@@ -16,6 +16,12 @@ const handleCommand = async ({
 
   const imageUrl = await getRandomTomUrl();
 
+  const { DOMAIN } = process.env;
+  if (!DOMAIN) throw new Error('DOMAIN must be set!');
+  const HOMEPAGE = `https://${DOMAIN}`;
+
+  const text = `ᴵ ᵃᵐ ᵃ <${HOMEPAGE}|ᵇᵒᵗ> ʳᵉˢᵖᵒⁿᵈᶦⁿᵍ ᵗᵒ ᵗʰᵉ ʰᵃⁿᵏˢ ˢˡᵃˢʰ ᶜᵒᵐᵐᵃⁿᵈ`;
+
   return {
     response_type: 'in_channel',
     blocks: [
@@ -23,6 +29,13 @@ const handleCommand = async ({
         type: 'image',
         image_url: imageUrl,
         alt_text: 'Tom Hanks',
+      },
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text,
+        },
       },
     ],
   };

@@ -19,6 +19,7 @@
     "@pulumi/awsx": "^0.40.0",
     "@pulumi/pulumi": "^3.37.2",
     "@slack/oauth": "^2.5.4",
+    "@vendia/serverless-express": "^4.10.1",
     "aws-lambda": "^1.0.7",
     "aws-sdk": "^2.1194.0",
     "probot": "^12.2.5"

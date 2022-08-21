@@ -9,7 +9,7 @@ type AwsLambdaCallback = import('@pulumi/aws').lambda.Callback<
  *  - it can't return void
  *  - it doesn't accept a 3rd 'callback' argument
  */
-type Handler = (
+export type Handler = (
   event: Parameters<AwsLambdaCallback>[0],
   context: Parameters<AwsLambdaCallback>[1],
 ) => Exclude<ReturnType<AwsLambdaCallback>, void>;

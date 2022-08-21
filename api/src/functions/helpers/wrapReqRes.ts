@@ -1,6 +1,7 @@
 import * as express from 'express';
 import { configure } from '@vendia/serverless-express';
 import { Context } from 'aws-lambda';
+import { Handler } from '../../types';
 
 const wrapReqRes = (
   callback: (req: express.Request, res: express.Response) => Promise<void>,

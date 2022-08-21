@@ -37,7 +37,8 @@ const createLambdaCallback = ({
     handler,
     role,
     environment: { variables: configForLambda },
-    timeout: 20, // Set it super long to handle extreme cold starts sometimes
+    timeout: 15, // Set it super long to handle extreme cold starts sometimes
+    memorySize: 1024, // Use more than the minimum since it makes things run faster and works out to a similar cost
   });
 };
 

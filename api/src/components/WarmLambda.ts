@@ -54,15 +54,18 @@ class WarmLambda extends pulumi.ComponentResource {
 
   constructor(
     name: string,
-    args: {
+    args: Omit<aws.lambda.BaseCallbackFunctionArgs, 'handler'> & {
       handler: Handler;
-      role?: aws.iam.Role;
-      environment?: aws.lambda.FunctionArgs['environment'];
-      timeout?: number;
     },
     opts?: pulumi.ResourceOptions,
   ) {
-    const { handler, role, environment, timeout } = args;
+    const { handler } = args;
+    const lambdaArgs: aws.lambda.CallbackFunctionArgs<
+      APIGatewayProxyEvent,
+      APIGatewayProxyResult
+    > = Object.fromEntries(
+      Object.entries(args).filter(([k]) => k !== 'handler'),
+    );
 
     if (!name) throw new Error('Missing required resource name');
     if (!handler) throw new Error('Missing required function handler');
@@ -83,7 +86,7 @@ class WarmLambda extends pulumi.ComponentResource {
     const lambda = new aws.lambda.CallbackFunction<
       APIGatewayProxyEvent,
       APIGatewayProxyResult
-    >(name, { callback: wrappedHandler, role, environment, timeout });
+    >(name, { callback: wrappedHandler, ...lambdaArgs });
 
     const subscription = new aws.cloudwatch.EventRuleEventSubscription(
       `${name}-warming-subscription`,

@@ -5,6 +5,15 @@ on:
     branches:
       - main
   workflow_dispatch:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+    branches:
+      - pulumi
+      - main
 
 jobs:
   deploy:
@@ -35,7 +44,7 @@ jobs:
 
       - uses: pulumi/actions@v3
         with:
-          command: up
+          command: preview # TODO: change to 'up'
           stack-name: prod
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}

@@ -15,7 +15,8 @@
     "skipLibCheck": true
   },
   "include": [
-    "src",
-    "index.ts"
+    "src/**/*.ts",
+    "index.ts",
+    "global.d.ts"
   ]
 }

@@ -1,18 +1,10 @@
 import { getInstaller } from '../../../helpers/slack';
-import {
-  getLambdaReturnFromResponse,
-  getReqResFromLambdaEvent,
-} from '../../../helpers/reqRes';
+import wrapReqRes from '../../../helpers/wrapReqRes';
 
-const handler: Handler = async (event) => {
-  const { req, res } = getReqResFromLambdaEvent(event);
-
-  const installer = getInstaller();
-  await installer.handleCallback(req, res);
-
-  const ret = getLambdaReturnFromResponse({ res });
-  console.info(JSON.stringify(ret)); // TODO: REMOVE
-  return ret;
-};
+const handler: Handler = async (event, context) =>
+  wrapReqRes(async (req, res) => {
+    const installer = getInstaller();
+    await installer.handleCallback(req, res);
+  })(event, context);
 
 export default handler;

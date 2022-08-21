@@ -7,7 +7,7 @@ const prefix = (s: string) => {
   const { SSM_PREFIX } = process.env;
   if (!SSM_PREFIX) throw new Error('SSM_PREFIX must be set!');
 
-  const PREFIX = `${SSM_PREFIX}/slack/`;
+  const PREFIX = `/${SSM_PREFIX}/slack/`;
   return `${PREFIX}${s}`;
 };
 

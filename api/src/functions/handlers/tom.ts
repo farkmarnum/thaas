@@ -1,5 +1,4 @@
 import { getRandomTomData } from '../helpers/tom';
-import { Handler } from '../../types';
 
 const handler: Handler = async () => {
   try {

@@ -1,7 +1,8 @@
+import * as path from 'path';
+
 import * as Pulumi from '@pulumi/pulumi';
 import * as aws from '@pulumi/aws';
 import * as awsx from '@pulumi/awsx';
-import { Handler } from './types';
 
 import { configForLambda, serviceBaseName } from './config';
 import WarmLambda from './components/WarmLambda';
@@ -39,6 +40,9 @@ const createLambdaCallback = ({
     environment: { variables: configForLambda },
     timeout: 15, // Set it super long to handle extreme cold starts sometimes
     memorySize: 1024, // Use more than the minimum since it makes things run faster and works out to a similar cost
+    codePathOptions: {
+      extraIncludePaths: [path.join(__dirname, 'global.d.ts')],
+    }, // Include the global types (Pulumi won't by default, since nothings export/imported from it)
   });
 };
 

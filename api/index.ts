@@ -1,3 +1,5 @@
+/// <reference path="src/global.d.ts" />
+
 import createCert from './src/cert';
 import createBucket from './src/bucket';
 import createLambdaRoutes from './src/lambdaRoutes';

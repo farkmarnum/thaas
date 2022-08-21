@@ -1,5 +1,4 @@
 import { getInstaller } from '../../../helpers/slack';
-import { Handler } from '../../../../types';
 import {
   getLambdaReturnFromResponse,
   getReqResFromLambdaEvent,

@@ -5,7 +5,6 @@ import {
   APIGatewayProxyResult,
   EventBridgeEvent,
 } from 'aws-lambda';
-import { Handler } from '../types';
 
 type WarmingEvent = EventBridgeEvent<string, unknown>;
 

@@ -3,13 +3,7 @@ import ReqResMock from '../../../helpers/ReqResMock';
 import { Handler } from '../../../../types';
 
 const handler: Handler = async (event) => {
-  const { path, headers, queryStringParameters } = event;
-
-  const { req, res } = ReqResMock({
-    path,
-    queryStringParameters,
-    headers,
-  });
+  const { req, res } = ReqResMock(event);
 
   const installer = getInstaller();
   await installer.handleInstallPath(req as any, res as any);

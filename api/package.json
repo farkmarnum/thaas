@@ -1,0 +1,42 @@
+{
+  "name": "thaas-backend-api",
+  "version": "0.1.0",
+  "description": "Tom Hanks As A Service - Backend API",
+  "author": "Mark Farnum",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/farkmarnum/thaas.git"
+  },
+  "license": "MIT",
+  "private": true,
+  "main": "index.ts",
+  "scripts": {
+    "lint": "eslint .",
+    "tc": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@pulumi/aws": "^5.10.0",
+    "@pulumi/awsx": "^0.40.0",
+    "@pulumi/pulumi": "^3.37.2",
+    "@slack/oauth": "^2.5.4",
+    "@vendia/serverless-express": "^4.10.1",
+    "aws-lambda": "^1.0.7",
+    "aws-sdk": "^2.1194.0",
+    "express": "^4.18.1",
+    "probot": "^12.2.5"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.102",
+    "@types/node": "^18.7.3",
+    "@typescript-eslint/eslint-plugin": "^5.33.0",
+    "@typescript-eslint/parser": "^5.33.0",
+    "eslint": "^8.2.0",
+    "eslint-config-airbnb-base": "15.0.0",
+    "eslint-config-airbnb-typescript": "^17.0.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.7.1",
+    "typescript": "^4.7.4"
+  }
+}

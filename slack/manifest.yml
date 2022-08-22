@@ -1,18 +1,18 @@
 display_information:
-  name: THaaS
+  name: thaas
   description: Tom Hanks As A Service
 features:
   bot_user:
-    display_name: THaaS
+    display_name: thaas
     always_online: false
   slash_commands:
     - command: /hanks
-      url: https://api.thaas.io/api/v1/integrations/slack
+      url: https://thaas.io/api/v1/integrations/slack
       description: Generate an image of Tom Hanks.
       should_escape: false
 oauth_config:
   redirect_urls:
-    - https://api.thaas.io/api/v1/integrations/slack/oauth
+    - https://thaas.io/api/v1/integrations/slack/oauth
   scopes:
     bot:
       - commands

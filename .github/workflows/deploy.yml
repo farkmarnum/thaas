@@ -7,12 +7,9 @@ on:
   workflow_dispatch:
 
 env:
-  DOMAIN: thaas.io
-  SERVICE: thaas
-
   AWS_REGION: us-east-1
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  SERVICE: thaas
+  DOMAIN: thaas.io
 
 jobs:
   deploy:
@@ -21,25 +18,39 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - uses: hashicorp/setup-terraform@v1
+      - uses: actions/setup-node@v2
         with:
-          terraform_version: 1.2.5
-          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+          node-version: 16.x
 
-      - name: Terraform
-        working-directory: terraform
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Install Node deps
+        working-directory: api
+        run: yarn install
+
+      - uses: pulumi/actions@v3
+        with:
+          work-dir: ./api
+          command: up
+          refresh: true
+          stack-name: prod
+          config-map: |
+            {
+              "aws:region": {          value: "${{ env.AWS_REGION }}",                secret: false },
+              DOMAIN: {                value: "${{ env.DOMAIN }}",                    secret: false },
+              SERVICE: {               value: "${{ env.SERVICE }}",                   secret: false },
+              ALARM_EMAIL: {           value: "${{ secrets.ALARM_EMAIL }}",           secret: true },
+              GH_APP_APP_ID: {         value: "${{ secrets.GH_APP_APP_ID }}",         secret: true },
+              GH_APP_PRIVATE_KEY: {    value: "${{ secrets.GH_APP_PRIVATE_KEY }}",    secret: true },
+              GH_APP_WEBHOOK_SECRET: { value: "${{ secrets.GH_APP_WEBHOOK_SECRET }}", secret: true },
+              SLACK_CLIENT_ID: {       value: "${{ secrets.SLACK_CLIENT_ID }}",       secret: true },
+              SLACK_CLIENT_SECRET: {   value: "${{ secrets.SLACK_CLIENT_SECRET }}",   secret: true },
+              SLACK_STATE_SECRET: {    value: "${{ secrets.SLACK_STATE_SECRET }}",    secret: true }
+            }
         env:
-          TF_VAR_domain: ${{ env.DOMAIN }}
-          TF_VAR_service: ${{ env.SERVICE }}
-          TF_VAR_SLACK_CLIENT_ID: ${{ secrets.SLACK_CLIENT_ID }}
-          TF_VAR_SLACK_CLIENT_SECRET: ${{ secrets.SLACK_CLIENT_SECRET }}
-          TF_VAR_SLACK_STATE_SECRET: ${{ secrets.SLACK_STATE_SECRET }}
-          TF_VAR_alarm_email: ${{ secrets.ALARM_EMAIL }}
-          TF_VAR_GH_APP_APP_ID: ${{ secrets.GH_APP_APP_ID }}
-          TF_VAR_GH_APP_PRIVATE_KEY: ${{ secrets.GH_APP_PRIVATE_KEY }}
-          TF_VAR_GH_APP_WEBHOOK_SECRET: ${{ secrets.GH_APP_WEBHOOK_SECRET }}
-        run: |
-          terraform init
-          terraform validate -no-color
-          terraform plan -no-color
-          terraform apply -auto-approve
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}

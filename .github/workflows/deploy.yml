@@ -5,15 +5,6 @@ on:
     branches:
       - main
   workflow_dispatch:
-  pull_request:
-    types:
-      - opened
-      - synchronize
-      - reopened
-      - ready_for_review
-    branches:
-      - pulumi
-      - main
 
 env:
   AWS_REGION: us-east-1

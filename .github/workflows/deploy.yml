@@ -45,7 +45,7 @@ jobs:
       - uses: pulumi/actions@v3
         with:
           work-dir: ./api
-          command: preview # TODO: change to 'up'
+          command: up
           refresh: true
           stack-name: prod
           config-map: |

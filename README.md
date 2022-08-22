@@ -26,7 +26,7 @@ Also, editing a comment to add `!hanks` will not result in a reply from the bot 
 
 ### Slack
 
-First, [install](https://api.thaas.io/api/v1/integrations/slack/install) the Slack app for your organization.
+First, [install](https://thaas.io/api/v1/integrations/slack/install) the Slack app for your organization.
 
 Then, use the command in a post:
 ```
@@ -38,10 +38,11 @@ The THaaS bot will respond with a tom hanks pic.
 
 ### API
 
-You can access the API at https://api.thaas.io.
+You can access the API at `https://thaas.io`.
 
+For example:
 ```
-curl -s https://api.thaas.io/api/v1/tom > tom.png
+curl -s https://thaas.io/api/v1/tom > tom.png
 ```
 
 This API is also the backend for all other platform integrations.
